@@ -36,7 +36,7 @@ export default function Form({
 
   return (
     <form onSubmit={handleSubmit} {...props}>
-      <fieldset style={{ padding: 0, border: "none" }} ref={ref}>
+      <fieldset style={{ padding: 0, margin: 0, border: "none" }} ref={ref}>
         {children}
       </fieldset>
     </form>
