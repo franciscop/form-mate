@@ -1,4 +1,4 @@
-# Form Mate [![npm install form-mate](https://img.shields.io/badge/npm%20install-form--mate-blue.svg)](https://www.npmjs.com/package/form-mate) [![test badge](https://github.com/franciscop/form-mate/workflows/tests/badge.svg)](https://github.com/franciscop/form-mate/blob/master/.github/workflows/tests.yml) [![gzip size](https://img.badgesize.io/franciscop/form-mate/master/index.min.js.svg?compression=gzip)](https://github.com/franciscop/form-mate/blob/master/index.min.js)
+# Form Mate [![npm install form-mate](https://img.shields.io/badge/npm%20install-form--mate-blue.svg)](https://www.npmjs.com/package/form-mate) [![test badge](https://github.com/franciscop/form-mate/workflows/tests/badge.svg)](https://github.com/franciscop/form-mate/actions) [![gzip size](https://img.badgesize.io/franciscop/form-mate/master/index.min.js.svg?compression=gzip)](https://github.com/franciscop/form-mate/blob/master/index.min.js)
 
 A tiny and elegant library to handle forms with React:
 
@@ -22,6 +22,9 @@ Benefits over a plain `<form>`:
 - Provide `autoReset` to clear the form when the onSubmit callback has finished successfully.
 - [Error handling](#onerror) neatly integrated with the above through the `onError` prop. You can do `onError={setError}`.
 
+
+## onSubmit
+
 onSubmit accepst an `async` function. The `autoReset` will wait for it to clear the form when the handler is finished:
 
 ```js
@@ -43,10 +46,24 @@ export default function Subscribe(){
 ```
 
 
+## autoReset
+
+This will make the form to reset **after** the onSubmit callback has successfully resolved:
+
+```js
+<Form onSubmit={...} autoReset>...</Form>
+```
+
+This is very useful when adding new items to a list in succession, [**see codesandbox example**](https://codesandbox.io/s/determined-nightingale-hzmob). To avoid auto resetting the form, just omit this prop altogether:
+
+```js
+<Form onSubmit={...}>...</Form>
+```
+
 
 ## onError
 
-You can provide an `onError` to handle any error in the `onSubmit`, so that the onSubmit can fail as desired without resetting the form:
+You can provide an `onError` to handle any error in the `onSubmit`. This allows the onSubmit to fail as desired without resetting the form:
 
 ```js
 import Form from 'form-mate';
@@ -67,7 +84,11 @@ export default () => {
 };
 ```
 
-This is a fully working shopping list example ([**see codesandbox**](https://codesandbox.io/s/determined-nightingale-hzmob)):
+
+
+## Demo
+
+A fully working shopping list example ([**see codesandbox**](https://codesandbox.io/s/determined-nightingale-hzmob)):
 
 ```js
 import React, { useState } from "react";
