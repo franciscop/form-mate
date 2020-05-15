@@ -1,6 +1,6 @@
 {
   "name": "form-mate",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "A tiny and elegant library to handle forms with React",
   "homepage": "https://github.com/franciscop/form-mate#readme",
   "repository": "https://github.com/franciscop/form-mate.git",
