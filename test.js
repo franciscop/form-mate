@@ -34,8 +34,9 @@ describe("form-mate", () => {
     const cb = jest.fn();
     const form = $(
       <Form onSubmit={cb}>
+        <input name="name" defaultValue="Francisco" />
         <input name="subscribe" defaultChecked type="checkbox" />
-        <input name="tos" value="accepted" defaultChecked type="checkbox" />
+        <input name="terms" value="accepted" defaultChecked type="checkbox" />
         <input name="gender" value="male" type="radio" />
         <input name="gender" value="female" defaultChecked type="radio" />
         <button>Submit</button>
@@ -43,8 +44,9 @@ describe("form-mate", () => {
     );
     await form.find("button").click();
     expect(cb).toBeCalledWith({
+      name: "Francisco",
       subscribe: "on", // The default when no "value" is provided
-      tos: "accepted",
+      terms: "accepted",
       gender: "female"
     });
   });

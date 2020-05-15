@@ -25,25 +25,32 @@ Benefits over a plain `<form>`:
 
 ## onSubmit
 
-onSubmit accepst an `async` function. The `autoReset` will wait for it to clear the form when the handler is finished:
+onSubmit accepst an `async` function. This function will be called with the values in the form:
 
 ```js
 import Form from 'form-mate';
 
 export default function Subscribe(){
-  const onSubmit = async data => {
-    await axios.post('/subscribe', data);
-    alert('Done!');
-  };
   return (
-    <Form onSubmit={onSubmit} autoReset>
-      <input name="fullname" required />
-      <input name="email" type="email" required />
+    <Form onSubmit={data => console.log(data)}>
+      <input name="name" defaultValue="Francisco" />
+      <input name="subscribe" defaultChecked type="checkbox" />
+      <input name="terms" value="accepted" defaultChecked type="checkbox" />
+      <input name="gender" value="female" type="radio" />
+      <input name="gender" value="male" defaultChecked type="radio" />
       <button>Subscribe!</button>
     </Form>
   );
 }
+// {
+//   name: "Francisco",
+//   subscribe: "on", // The default when no "value" is provided
+//   terms: "accepted",
+//   gender: "male"
+// }
 ```
+
+See [the tests](https://github.com/franciscop/form-mate/blob/master/test.js) for more examples of how these are parsed.
 
 
 ## autoReset
