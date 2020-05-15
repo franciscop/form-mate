@@ -1,0 +1,59 @@
+{
+  "name": "form-mate",
+  "version": "0.1.0",
+  "description": "A tiny and elegant library to handle forms with React",
+  "homepage": "https://github.com/franciscop/form-mate#readme",
+  "repository": "https://github.com/franciscop/form-mate.git",
+  "bugs": "https://github.com/franciscop/form-mate/issues",
+  "funding": "https://www.paypal.me/franciscopresencia/19",
+  "author": "Francisco Presencia <public@francisco.io> (https://francisco.io/)",
+  "license": "MIT",
+  "scripts": {
+    "build": "webpack -c",
+    "gzip": "gzip -c index.min.js | wc -c && echo 'bytes'",
+    "test": "jest --coverage",
+    "watch": "jest --watch"
+  },
+  "keywords": [
+    "react",
+    "form",
+    "manager",
+    "state",
+    "error",
+    "simple",
+    "easy",
+    "i18n"
+  ],
+  "main": "index.min.js",
+  "files": [],
+  "dependencies": {},
+  "peerDependencies": {
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/preset-react": "^7.0.0",
+    "babel-jest": "^25.0.0",
+    "babel-loader": "^8.0.6",
+    "babel-polyfill": "^6.26.0",
+    "enzyme": "^3.7.0",
+    "enzyme-adapter-react-16": "^1.6.0",
+    "form_to_object": "^2.0.0",
+    "jest": "^24.8.0",
+    "react": "^16.3.0",
+    "react-dom": "^16.3.0",
+    "react-test": "^0.8.0-0",
+    "regenerator-runtime": "^0.12.1",
+    "webpack": "^4.25.0",
+    "webpack-cli": "^3.1.2"
+  },
+  "babel": {
+    "presets": [
+      "@babel/preset-env",
+      "@babel/preset-react"
+    ],
+    "plugins": []
+  }
+}
