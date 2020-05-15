@@ -3,41 +3,43 @@ title: Form Mate
 url: https://form-mate.dev/
 description: A tiny and elegant library to handle forms with React
 ---
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="initial-scale=1">
-    <title>React Test</title>
+    <meta name="viewport" content="initial-scale=1" />
+    <title>{{page.title}}</title>
 
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,600|Source+Code+Pro&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://react-test.dev/style.min.css">
+    <link
+      href="https://fonts.googleapis.com/css?family=Montserrat:400,600|Source+Code+Pro&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://documentation.page/style.min.css" />
 
-    <link rel="icon" type="image/png" href="{{url}}favicon.png" />
-    <meta name="description" content="{{description}}" />
+    <link rel="icon" type="image/png" href="{{page.url}}assets/favicon.png" />
+    <meta name="description" content="{{page.description}}" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="{{url}}" />
-    <meta name="twitter:title" content="{{title}}" />
-    <meta name="twitter:image" content="http://form-mate.dev/hero.png">
-    <meta name="twitter:description" content="{{description}}" />
+    <meta name="twitter:url" content="{{page.url}}" />
+    <meta name="twitter:title" content="{{page.title}}" />
+    <meta name="twitter:image" content="{{page.url}}assets/hero.png" />
+    <meta name="twitter:description" content="{{page.description}}" />
 
     <!-- Facebook & others -->
-    <meta property="og:title" content="{{title}}" />
+    <meta property="og:title" content="{{page.title}}" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{url}}" />
-    <meta property="og:image" content="{{url}}hero.png" />
-    <meta property="og:description" content="{{description}}" />
+    <meta property="og:url" content="{{page.url}}" />
+    <meta property="og:image" content="{{page.url}}assets/hero.png" />
+    <meta property="og:description" content="{{page.description}}" />
   </head>
   <body>
     <div class="flex">
       <div>
         <div class="wrap">
-          <aside>
-            <h2><a href="#top">{{title}}</a></h2>
-          </aside>
+          <aside></aside>
         </div>
       </div>
       <div id="top">
@@ -45,6 +47,6 @@ description: A tiny and elegant library to handle forms with React
       </div>
     </div>
 
-    <script src="https://react-test.dev/index.min.js"></script>
+    <script src="https://documentation.page/script.min.js"></script>
   </body>
 </html>
