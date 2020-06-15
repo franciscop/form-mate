@@ -21,6 +21,7 @@ Benefits over a plain `<form>`:
 - Disable the form while it's submitting to avoid double-submit.
 - Provide `autoReset` to clear the form when the onSubmit callback has finished successfully.
 - [Error handling](#onerror) neatly integrated with the above through the `onError` prop. You can do `onError={setError}`.
+- If you provide `encType="multipart/form-data"`, the callback will receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
 
 
 ## onSubmit
@@ -92,8 +93,27 @@ export default () => {
 ```
 
 
+## encType
 
-## Demo
+The encType can be set to `multipart/form-data` to upload files:
+
+```js
+import Form from 'form-mate';
+
+export default() => (
+  <Form onSubmit={...} encType="multipart/form-data">
+    <input name="name" />
+    <input type="file" name="file" />
+    <button>Send</button>
+  </Form>
+);
+```
+
+In that case, the argument `data` passed to the onSubmit will not be a plain object, it will be an [instance of `FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) instead.
+
+
+
+## Example: add items to a list
 
 A fully working shopping list example ([**see codesandbox**](https://codesandbox.io/s/determined-nightingale-hzmob)):
 
@@ -119,6 +139,29 @@ export default function Groceries() {
         </Form>
       </li>
     </ul>
+  );
+}
+```
+
+
+## Example: upload files with React
+
+To upload files with React and Axios, you can do it like this:
+
+```js
+import Form from 'form-mate';
+
+export default function App() {
+  const onSubmit = data => {
+    // Send the data to the server
+    await axios.post("/hello", data, { "Content-Type": "multipart/form-data" });
+  };
+  return (
+    <Form onSubmit={onSubmit} encType="multipart/form-data">
+      <input name="name" />
+      <input type="file" name="file" />
+      <button>Send</button>
+    </Form>
   );
 }
 ```

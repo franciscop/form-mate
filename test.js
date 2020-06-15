@@ -3,7 +3,7 @@ import React from "react";
 import $ from "react-test";
 import Form from "./index.js";
 
-const delay = t => new Promise(done => setTimeout(done, t));
+const delay = (t) => new Promise((done) => setTimeout(done, t));
 
 describe("form-mate", () => {
   it("defaults to an empty object", async () => {
@@ -47,7 +47,7 @@ describe("form-mate", () => {
       name: "Francisco",
       subscribe: "on", // The default when no "value" is provided
       terms: "accepted",
-      gender: "female"
+      gender: "female",
     });
   });
 });
