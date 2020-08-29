@@ -40,7 +40,26 @@ description: A tiny and elegant library to handle forms with React
       <div class="flex">
         <div class="thirty">
           <aside>
-            <div class="scroller"></div>
+            <div class="scroller">
+              <form class="search" autocomplete="off">
+                <input name="search" placeholder="Search Documentation" />
+                <div class="results"></div>
+              </form>
+              {{#each menu}} {{#unless this.main}}
+              <section>
+                <h3>
+                  {{#if this.sections}}
+                  <button class="more"><img src="/assets/plus.svg" /></button>
+                  {{/if}}
+                  <a href="{{this.link}}">{{this.title}}</a>
+                </h3>
+                <div class="submenu">
+                  {{#each this.sections}} {{> link to=this.link label=this.title
+                  }} {{/each}}
+                </div>
+              </section>
+              {{/unless}} {{/each}}
+            </div>
           </aside>
         </div>
         <div class="seventy">
