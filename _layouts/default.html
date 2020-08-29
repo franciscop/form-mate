@@ -49,13 +49,22 @@ description: A tiny and elegant library to handle forms with React
               <section>
                 <h3>
                   {{#if this.sections}}
-                  <button class="more"><img src="/assets/plus.svg" /></button>
+                  <button class="more">
+                    <img src="https://documentation.page/assets/plus.svg" />
+                  </button>
                   {{/if}}
                   <a href="{{this.link}}">{{this.title}}</a>
                 </h3>
                 <div class="submenu">
-                  {{#each this.sections}} {{> link to=this.link label=this.title
-                  }} {{/each}}
+                  {{#each this.sections}}
+                  <div>
+                    <a href="{{to}}">
+                      <img
+                        src="https://documentation.page/assets/file.svg"
+                      /><span>{{label}}</span>
+                    </a>
+                  </div>
+                  {{/each}}
                 </div>
               </section>
               {{/unless}} {{/each}}
@@ -76,5 +85,10 @@ description: A tiny and elegant library to handle forms with React
       charset="utf-8"
     ></script>
     <script src="https://documentation.page/assets/script.js"></script>
+    <script type="text/javascript">
+      $("h2").each((title) => {
+        console.log(title);
+      });
+    </script>
   </body>
 </html>
