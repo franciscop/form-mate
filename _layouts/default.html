@@ -88,6 +88,7 @@ description: A tiny and elegant library to handle forms with React
       u("h2").each((title) => {
         const to = "#" + title.id;
         const text = u(title).text();
+        console.log({ to, text });
         u(".submenu").append(`
           <div>
             <a href="${to}">
