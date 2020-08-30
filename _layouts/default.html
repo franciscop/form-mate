@@ -18,7 +18,7 @@ description: A tiny and elegant library to handle forms with React
     />
     <link rel="stylesheet" href="https://documentation.page/assets/style.css" />
 
-    <link rel="icon" type="image/png" href="{{page.url}}favicon.png" />
+    <link rel="icon" type="image/png" href="/assets/favicon.png" />
     <meta name="description" content="{{page.description}}" />
 
     <!-- Twitter -->
@@ -36,6 +36,22 @@ description: A tiny and elegant library to handle forms with React
     <meta property="og:description" content="{{page.description}}" />
   </head>
   <body>
+    <nav>
+      <a href="/" class="brand">
+        <img class="logo" src="/assets/favicon.png" alt="" />
+        <span>Form Mate</span>
+      </a>
+
+      <input id="bmenub" type="checkbox" class="show" />
+      <label for="bmenub" class="burger">menu</label>
+
+      <div class="menu">
+        <a href="https://francisco.io/">Author</a>
+        <a href="https://www.paypal.me/franciscopresencia/19">Donate</a>
+        <a href="https://www.npmjs.com/package/form-mate">npm</a>
+        <a href="https://github.com/franciscop/form-mate">Github</a>
+      </div>
+    </nav>
     <main>
       <div class="flex">
         <div class="thirty">
