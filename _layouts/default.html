@@ -89,22 +89,14 @@ description: A tiny and elegant library to handle forms with React
         const to = "#" + el.id;
         const title = u(el).text();
         console.log(`
-          <div>
-            <a href="${to}">
-              <img
-                src="https://documentation.page/assets/file.svg"
-              /><span>${title}</span>
-            </a>
-          </div>
+          <h3>
+            <a href="${to}">${title}</a>
+          </h3>
         `);
-        u(".submenu").append(`
-          <div>
-            <a href="${to}">
-              <img
-                src="https://documentation.page/assets/file.svg"
-              /><span>${title}</span>
-            </a>
-          </div>
+        u(".scroller").append(`
+          <h3>
+            <a href="${to}">${title}</a>
+          </h3>
         `);
       });
     </script>
