@@ -19,9 +19,10 @@ Benefits over a plain `<form>`:
 
 - Parse the form fields into an object for easy access and consumption. Now you can do `onSubmit(item => setItems([...items, item]))`.
 - Disable the form while it's submitting to avoid double-submit.
-- [Error handling](#onerror) neatly integrated through the `onError` prop. You can do `onError={setError}`.
-- Option [`autoReset`](#autoreset) to clear the form when the onSubmit callback has finished successfully.
-- Option [`encType`](#enctype) (like `encType="multipart/form-data"`) for file handling. It makes the callback receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
+- Prop [`onError`](#onerror) to neatly integrate error handling with the rest of the options.
+- Prop [`autoReset`](#autoreset) to reset the form after onSubmit finishes successfully.
+- Prop [`encType`](#enctype) (like `encType="multipart/form-data"`) for file handling. It makes the callback receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
+
 
 
 ## Getting Started
@@ -38,7 +39,7 @@ Import it and use it anywhere in your React project:
 import Form from 'form-mate';
 
 export default () => (
-  <Form onSubmit={data => console.log(data)}>
+  <Form onSubmit={data => console.log(data)} autoReset>
     {/* ... */}
   </Form>
 );
