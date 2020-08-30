@@ -19,14 +19,36 @@ Benefits over a plain `<form>`:
 
 - Parse the form fields into an object for easy access and consumption. Now you can do `onSubmit(item => setItems([...items, item]))`.
 - Disable the form while it's submitting to avoid double-submit.
-- Provide `autoReset` to clear the form when the onSubmit callback has finished successfully.
-- [Error handling](#onerror) neatly integrated with the above through the `onError` prop. You can do `onError={setError}`.
-- If you provide `encType="multipart/form-data"`, the callback will receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
+- [Error handling](#onerror) neatly integrated through the `onError` prop. You can do `onError={setError}`.
+- Option [`autoReset`](#autoreset) to clear the form when the onSubmit callback has finished successfully.
+- Option [`encType`](#enctype) (like `encType="multipart/form-data"`) for file handling. It makes the callback receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
+
+
+## Getting Started
+
+Install `form-mate` with npm:
+
+```
+npm install form-mate
+```
+
+Import it and use it anywhere in your React project:
+
+```js
+import Form from 'form-mate';
+
+export default () => (
+  <Form onSubmit={data => console.log(data)}>
+    {/* ... */}
+  </Form>
+);
+```
+
 
 
 ## onSubmit
 
-onSubmit accepst an `async` function. This function will be called with the values in the form:
+Mandatory prop that accepts a sync or `async` callback. It will receive the values in the form when submitted:
 
 ```js
 import Form from 'form-mate';
@@ -51,27 +73,13 @@ export default function Subscribe(){
 // }
 ```
 
-See [the tests](https://github.com/franciscop/form-mate/blob/master/test.js) for more examples of how these are parsed.
+It prevents the default action automatically. See [the tests](https://github.com/franciscop/form-mate/blob/master/test.js) for more examples of how the fields are parsed.
 
-
-## autoReset
-
-This will make the form to reset **after** the onSubmit callback has successfully resolved:
-
-```js
-<Form onSubmit={...} autoReset>...</Form>
-```
-
-This is very useful when adding new items to a list in succession, [**see codesandbox example**](https://codesandbox.io/s/determined-nightingale-hzmob). To avoid auto resetting the form, just omit this prop altogether:
-
-```js
-<Form onSubmit={...}>...</Form>
-```
 
 
 ## onError
 
-You can provide an `onError` to handle any error in the `onSubmit`. This allows the onSubmit to fail as desired without resetting the form:
+Optional prop to handle any error happening in the `onSubmit`. This allows the onSubmit to fail as desired. Works well with both sync and async `onSubmit`:
 
 ```js
 import Form from 'form-mate';
@@ -91,6 +99,25 @@ export default () => {
   );
 };
 ```
+
+
+
+## autoReset
+
+Make the form to reset **after** the onSubmit callback has successfully resolved:
+
+```js
+<Form onSubmit={...} autoReset>...</Form>
+```
+
+This is very useful when adding new items to a list in succession, [**see codesandbox example**](https://codesandbox.io/s/determined-nightingale-hzmob). To avoid auto resetting the form, just omit this prop altogether:
+
+```js
+<Form onSubmit={...}>...</Form>
+```
+
+Note that the form will _not_ be reset if the `onSubmit` throws an error (sync or async).
+
 
 
 ## encType
