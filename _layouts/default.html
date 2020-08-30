@@ -1,6 +1,6 @@
 ---
 title: Form Mate
-url: https://form-mate.dev/
+url: https://form-mate.dev
 description: A tiny and elegant library to handle forms with React
 ---
 
@@ -16,26 +16,26 @@ description: A tiny and elegant library to handle forms with React
       href="https://fonts.googleapis.com/css?family=Montserrat:400,600|Source+Code+Pro&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="/assets/style.css" />
+    <link rel="stylesheet" href="{{url}}/assets/style.css" />
 
-    <link rel="icon" type="image/png" href="/assets/favicon.png" />
-    <meta name="description" content="{{page.description}}" />
+    <link rel="icon" type="image/png" href="{{url}}/assets/favicon.png" />
+    <meta name="description" content="{{description}}" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:url" content="{{page.url}}" />
-    <meta name="twitter:title" content="{{page.title}}" />
-    <meta name="twitter:image" content="{{page.url}}hero.png" />
-    <meta name="twitter:description" content="{{page.description}}" />
+    <meta name="twitter:url" content="{{url}}/" />
+    <meta name="twitter:title" content="{{title}}" />
+    <meta name="twitter:image" content="{{url}}/assets/hero.png" />
+    <meta name="twitter:description" content="{{description}}" />
 
     <!-- Facebook & others -->
-    <meta property="og:title" content="{{page.title}}" />
+    <meta property="og:title" content="{{title}}" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{page.url}}" />
-    <meta property="og:image" content="{{page.url}}hero.png" />
-    <meta property="og:description" content="{{page.description}}" />
+    <meta property="og:url" content="{{url}}/" />
+    <meta property="og:image" content="{{url}}/assets/hero.png" />
+    <meta property="og:description" content="{{description}}" />
   </head>
-  <body>
+  <body id="top">
     <nav>
       <a href="/" class="brand">
         <img class="logo" src="/assets/favicon.png" alt="" />
