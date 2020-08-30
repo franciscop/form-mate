@@ -85,10 +85,9 @@ description: A tiny and elegant library to handle forms with React
       charset="utf-8"
     ></script>
     <script type="text/javascript">
-      u("h2").each((title) => {
-        const to = "#" + title.id;
-        const text = u(title).text();
-        console.log({ to, text });
+      u("h2").each((el) => {
+        const to = "#" + el.id;
+        const title = u(el).text();
         u(".submenu").append(`
           <div>
             <a href="${to}">
