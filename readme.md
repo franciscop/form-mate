@@ -140,7 +140,7 @@ In that case, the argument `data` passed to the onSubmit will not be a plain obj
 
 
 
-## Example: add items to a list
+## Add items to a list
 
 A fully working shopping list example ([**see codesandbox**](https://codesandbox.io/s/determined-nightingale-hzmob)):
 
@@ -171,7 +171,7 @@ export default function Groceries() {
 ```
 
 
-## Example: upload files with React
+## Upload files with React
 
 To upload files with React and Axios, you can do it like this:
 
