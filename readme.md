@@ -105,19 +105,15 @@ export default () => {
 
 ## autoReset
 
-Make the form to reset **after** the onSubmit callback has successfully resolved:
+By default the form is not reset after it's submitted. This prop can make the form to reset **after** the onSubmit callback has resolved successfully:
 
 ```js
 <Form onSubmit={...} autoReset>...</Form>
 ```
 
-This is very useful when adding new items to a list in succession, [**see codesandbox example**](https://codesandbox.io/s/determined-nightingale-hzmob). To avoid auto resetting the form, just omit this prop altogether:
+Even with this prop, the form will _not_ be reset if the `onSubmit` throws an error (sync or async).
 
-```js
-<Form onSubmit={...}>...</Form>
-```
-
-Note that the form will _not_ be reset if the `onSubmit` throws an error (sync or async).
+This prop is very useful when adding new items to a list in succession, [**see codesandbox example**](https://codesandbox.io/s/determined-nightingale-hzmob).
 
 
 
