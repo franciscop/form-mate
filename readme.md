@@ -19,7 +19,7 @@ Benefits over a plain `<form>`:
 
 - Parse the form fields into an object for easy access and consumption. Now you can do `onSubmit(item => setItems([...items, item]))`.
 - Disable the form while it's submitting to avoid double-submit.
-- Prop [`onError`](#onerror) for error handling, neatly integrated with other options.
+- Prop [`onError`](#onerror)  for easy error handling, integrates well with other options.
 - Prop [`autoReset`](#autoreset) to reset the form after onSubmit finishes successfully.
 - Prop [`encType`](#enctype) (like `encType="multipart/form-data"`) for file handling. It makes the callback receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
 
