@@ -91,13 +91,18 @@ const showSection = (section, forceTrue) => {
 };
 
 if (window.innerWidth > 600) {
-  if (/^\/documentation\/?$/.test(window.location.pathname)) {
-    showSection($(".more").first());
-  } else {
+  setTimeout(() => {
     const href = window.location.hash || window.location.pathname;
     const target = u(`a[href="${href}"]`);
-    showSection(target.closest('section').find('.more').first());
-  }
+    const section = target.closest('section').find('.more').first();
+    // If the URL+Hash indicates we are in a specific place, highlight that
+    if (section) {
+      showSection(section);
+    // Otherwise open the first section
+    } else {
+      showSection($(".more").first());
+    }
+  }, 600);
 }
 
 $(".more").on("click", (e) => {
