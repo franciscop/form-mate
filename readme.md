@@ -46,8 +46,9 @@ export default () => (
 ```
 
 
+## API
 
-## onSubmit
+### onSubmit
 
 Mandatory prop that accepts a sync or `async` callback. It will receive the values in the form when submitted:
 
@@ -78,7 +79,7 @@ It prevents the default action automatically. See [the tests](https://github.com
 
 
 
-## onError
+### onError
 
 Optional prop to handle any error happening in the `onSubmit`. This allows the onSubmit to fail as desired. Works well with both sync and async `onSubmit`:
 
@@ -103,7 +104,7 @@ export default () => {
 
 
 
-## autoReset
+### autoReset
 
 By default the form is not reset after it's submitted. This prop can make the form to reset **after** the onSubmit callback has resolved successfully:
 
@@ -117,7 +118,7 @@ This prop is very useful when adding new items to a list in succession, [**see c
 
 
 
-## encType
+### encType
 
 The encType can be set to `multipart/form-data` to upload files:
 
@@ -137,7 +138,9 @@ In that case, the argument `data` passed to the onSubmit will not be a plain obj
 
 
 
-## Add items to a list
+## Examples
+
+### Add items to a list
 
 A fully working shopping list example ([**see codesandbox**](https://codesandbox.io/s/determined-nightingale-hzmob)):
 
@@ -168,7 +171,7 @@ export default function Groceries() {
 ```
 
 
-## Upload files with React
+### Upload files with React
 
 To upload files with React and Axios, you can do it like this:
 
