@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 import serialize from "form_to_object";
 
-const logError = (error) => console.error(error);
+const logError = error => console.error(error);
 
 export default function Form({
   onSubmit,
@@ -13,7 +13,7 @@ export default function Form({
   const ref = useRef();
   if (!onSubmit) throw new Error("onSubmit() callback is required");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     try {
       e.persist();
       e.preventDefault();
@@ -37,6 +37,8 @@ export default function Form({
     } catch (error) {
       onError(error);
     } finally {
+      // If the component unmounts before the callback finishes, ignore it
+      if (!ref || !ref.current) return;
       ref.current.disabled = false;
     }
   };
