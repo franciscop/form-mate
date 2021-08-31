@@ -1,11 +1,20 @@
 import React, { useRef } from "react";
-import serialize from "form_to_object";
+import formToObject from "form_to_object";
 
 const logError = error => console.error(error);
+
+const serialize = form => {
+  const enctype = (form.enctype || "").toLowerCase();
+  if (enctype === "multipart/form-data") {
+    return new FormData(form);
+  }
+  return formToObject(form) || {};
+};
 
 export default function Form({
   onSubmit,
   onError = logError,
+  onChange,
   autoReset,
   children,
   ...props
@@ -18,19 +27,10 @@ export default function Form({
       e.persist();
       e.preventDefault();
 
-      // Retrieve the data as a plain object
-      const enctype = (e.target.enctype || "").toLowerCase();
-      let data;
-      if (enctype === "multipart/form-data") {
-        data = new FormData(e.target);
-      } else {
-        data = serialize(e.target) || {};
-      }
-
       // Disable the form while everything is going on
       ref.current.disabled = true;
 
-      await onSubmit(data);
+      await onSubmit(serialize(e.target));
 
       // Reset the data from the form if there was no issue
       if (autoReset) e.target.reset();
@@ -43,8 +43,10 @@ export default function Form({
     }
   };
 
+  const handleChange = e => (onChange ? onChange(e.target) : null);
+
   return (
-    <form onSubmit={handleSubmit} {...props}>
+    <form onSubmit={handleSubmit} onChange={handleChange} {...props}>
       <fieldset style={{ padding: 0, margin: 0, border: "none" }} ref={ref}>
         {children}
       </fieldset>

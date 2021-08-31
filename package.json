@@ -11,10 +11,10 @@
   "author": "Francisco Presencia <public@francisco.io> (https://francisco.io/)",
   "license": "MIT",
   "scripts": {
-    "build": "webpack -c",
+    "build": "rollup -c",
     "gzip": "gzip -c index.min.js | wc -c && echo 'bytes'",
-    "test": "jest --coverage",
-    "watch": "jest --watch"
+    "start": "jest --watch",
+    "test": "jest --coverage"
   },
   "keywords": [
     "react",
@@ -28,34 +28,29 @@
   ],
   "main": "index.min.js",
   "files": [],
-  "dependencies": {},
+  "dependencies": {
+    "form_to_object": "^2.0.0"
+  },
   "peerDependencies": {
-    "react": "^16.3.0 || ^17.0.0",
-    "react-dom": "^16.3.0 || ^17.0.0"
+    "react": "^16.3.0 || ^17.0.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.4.5",
-    "@babel/preset-env": "^7.4.5",
-    "@babel/preset-react": "^7.0.0",
-    "babel-jest": "^25.0.0",
-    "babel-loader": "^8.0.6",
+    "@babel/core": "^7.15.0",
+    "@babel/preset-env": "^7.15.0",
+    "@babel/preset-react": "^7.14.5",
+    "babel-loader": "^8.2.2",
     "babel-polyfill": "^6.26.0",
-    "enzyme": "^3.7.0",
-    "enzyme-adapter-react-16": "^1.6.0",
-    "form_to_object": "^2.0.0",
     "jest": "^24.8.0",
     "react": "^16.3.0 || ^17.0.0",
-    "react-dom": "^16.3.0 || ^17.0.0",
-    "react-test": "0.8.0-0",
-    "regenerator-runtime": "^0.12.1",
-    "webpack": "^4.25.0",
-    "webpack-cli": "^3.1.2"
+    "react-test": "^0.10.2",
+    "rollup": "^1.32.1",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-terser": "^5.2.0"
   },
   "babel": {
     "presets": [
       "@babel/preset-env",
       "@babel/preset-react"
-    ],
-    "plugins": []
+    ]
   }
 }
