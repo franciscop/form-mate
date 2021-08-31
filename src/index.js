@@ -43,7 +43,7 @@ export default function Form({
     }
   };
 
-  const handleChange = e => (onChange ? onChange(e.target) : null);
+  const handleChange = e => (onChange ? onChange(serialize(e.target)) : null);
 
   return (
     <form onSubmit={handleSubmit} onChange={handleChange} {...props}>

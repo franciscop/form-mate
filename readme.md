@@ -3,7 +3,7 @@
 A tiny and elegant library to handle forms with React:
 
 ```js
-import Form from 'form-mate';
+import Form from "form-mate";
 
 // { fullname: "Francisco", email: "xxxxxx@francisco.io" }
 export default () => (
@@ -19,11 +19,10 @@ Benefits over a plain `<form>`:
 
 - Parse the form fields into an object for easy access and consumption. Now you can do `onSubmit(item => setItems([...items, item]))`.
 - Disable the form while it's submitting to avoid double-submit.
-- Prop [`onError`](#onerror)  for easy error handling, integrates well with other options.
+- Prop [`onError`](#onerror) for easy error handling, integrates well with other options.
+- Prop [`onChange`](#onchange) to listen to the form changes as they happen.
 - Prop [`autoReset`](#autoreset) to clear the form after `onSubmit` finishes successfully.
 - Prop [`encType`](#enctype) (like `encType="multipart/form-data"`) for file handling. It makes the callback receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
-
-
 
 ## Getting Started
 
@@ -36,7 +35,7 @@ npm install form-mate
 Import it and use it anywhere in your React project:
 
 ```js
-import Form from 'form-mate';
+import Form from "form-mate";
 
 export default () => (
   <Form onSubmit={data => console.log(data)} autoReset>
@@ -45,7 +44,6 @@ export default () => (
 );
 ```
 
-
 ## API
 
 ### onSubmit
@@ -53,9 +51,9 @@ export default () => (
 Mandatory prop that accepts a sync or `async` callback. It will receive the values in the form when submitted:
 
 ```js
-import Form from 'form-mate';
+import Form from "form-mate";
 
-export default function Subscribe(){
+export default function Subscribe() {
   return (
     <Form onSubmit={data => console.log(data)}>
       <input name="name" defaultValue="Francisco" />
@@ -77,19 +75,17 @@ export default function Subscribe(){
 
 It prevents the default action automatically. See [the tests](https://github.com/franciscop/form-mate/blob/master/test.js) for more examples of how the fields are parsed.
 
-
-
 ### onError
 
 Optional prop to handle any error happening in the `onSubmit`. This allows the onSubmit to fail as desired. Works well with both sync and async `onSubmit`:
 
 ```js
-import Form from 'form-mate';
+import Form from "form-mate";
 
 export default () => {
   const [error, setError] = useState();
   const onSubmit = data => {
-    throw new Error('Aaaaagh');
+    throw new Error("Aaaaagh");
   };
   return (
     <Form onSubmit={handleForm} onError={setError} autoReset>
@@ -102,7 +98,26 @@ export default () => {
 };
 ```
 
+### onChange
 
+Listen to the forms' changes in fields as they happen. It will be triggered on every keystroke, on every click (that changes the data), etc:
+
+```js
+import Form from "form-mate";
+
+export default function Subscribe() {
+  return (
+    <Form onChange={data => console.log(data)}>
+      <input name="name" defaultValue="Francisco" />
+      <input name="subscribe" defaultChecked type="checkbox" />
+      <input name="terms" value="accepted" defaultChecked type="checkbox" />
+      <input name="gender" value="female" type="radio" />
+      <input name="gender" value="male" defaultChecked type="radio" />
+      <button>Subscribe!</button>
+    </Form>
+  );
+}
+```
 
 ### autoReset
 
@@ -115,8 +130,6 @@ By default the form is not reset after it's submitted. This prop can make the fo
 Even with this prop, the form will _not_ be reset if the `onSubmit` throws an error (sync or async).
 
 This prop is very useful when adding new items to a list in succession, [**see codesandbox example**](https://codesandbox.io/s/determined-nightingale-hzmob).
-
-
 
 ### encType
 
@@ -135,8 +148,6 @@ export default() => (
 ```
 
 In that case, the argument `data` passed to the onSubmit will not be a plain object, it will be an [instance of `FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) instead.
-
-
 
 ## Examples
 
@@ -169,7 +180,6 @@ export default function Groceries() {
   );
 }
 ```
-
 
 ### Upload files with React
 
