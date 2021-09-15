@@ -20,7 +20,9 @@ export default function Form({
   ...props
 }) {
   const ref = useRef();
-  if (!onSubmit) throw new Error("onSubmit() callback is required");
+  if (!onSubmit && !onChange) {
+    throw new Error("onSubmit() callback is required");
+  }
 
   const handleSubmit = async e => {
     try {
