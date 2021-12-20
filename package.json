@@ -1,11 +1,13 @@
 {
   "name": "form-mate",
-  "version": "2.0.3",
+  "version": "3.0.0",
   "description": "A tiny and elegant library to handle forms with React",
   "homepage": "https://form-mate.dev/",
   "repository": "https://github.com/franciscop/form-mate.git",
   "bugs": "https://github.com/franciscop/form-mate/issues",
-  "funding": "https://www.paypal.me/franciscopresencia/19",
+  "funding": {
+    "url": "https://www.paypal.me/franciscopresencia/19"
+  },
   "author": "Francisco Presencia <public@francisco.io> (https://francisco.io/)",
   "license": "MIT",
   "type": "module",
