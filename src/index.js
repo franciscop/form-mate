@@ -1,9 +1,9 @@
 import React, { useRef } from "react";
 import formToObject from "form_to_object";
 
-const logError = error => console.error(error);
+const logError = (error) => console.error(error);
 
-const serialize = form => {
+const serialize = (form) => {
   const enctype = (form.enctype || "").toLowerCase();
   if (enctype === "multipart/form-data") {
     return new FormData(form);
@@ -24,7 +24,7 @@ export default function Form({
     throw new Error("onSubmit() callback is required");
   }
 
-  const handleSubmit = async e => {
+  const handleSubmit = async (e) => {
     try {
       e.persist();
       e.preventDefault();
@@ -45,7 +45,7 @@ export default function Form({
     }
   };
 
-  const handleChange = e =>
+  const handleChange = (e) =>
     onChange ? onChange(serialize(e.currentTarget)) : null;
 
   return (

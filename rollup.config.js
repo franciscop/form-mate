@@ -10,9 +10,9 @@ export default {
       exclude: "node_modules/**",
       presets: [
         ["@babel/env", { targets: { node: 12 } }],
-        "@babel/preset-react"
-      ]
+        "@babel/preset-react",
+      ],
     }),
-    terser()
-  ]
+    terser(),
+  ],
 };
