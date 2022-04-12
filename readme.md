@@ -23,6 +23,8 @@ Benefits over a plain `<form>`:
 - Prop [`onChange`](#onchange) to listen to the form changes as they happen.
 - Prop [`autoReset`](#autoreset) to clear the form after `onSubmit` finishes successfully.
 - Prop [`encType`](#enctype) (like `encType="multipart/form-data"`) for file handling. It makes the callback receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
+- Sub Component `<FormError />` for more advanced error management.
+- Sub Component `<FormLoading />` for more advanced loading state handling.
 
 ## Getting Started
 
@@ -148,6 +150,58 @@ export default() => (
 ```
 
 In that case, the argument `data` passed to the onSubmit will not be a plain object, it will be an [instance of `FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) instead.
+
+### <FormError />
+
+When there's an error on the `onSubmit` function, you can use this component to display it in a variety of ways:
+
+```js
+import Form, { FormError } from 'form-mate';
+
+export default () => (
+  <Form onSubmit={...}>
+    // A plain string with any error message from onSubmit
+    <FormError />
+
+    // A simple message that is displayed only when there's an error
+    <FormError>There was an issue...</FormError>
+
+    // Use the actual error message within a callback
+    <FormError>{msg => msg ? <p className="error">{msg}</p> : ''}</FormError>
+
+    <input name="name" />
+    <button>Send</button>
+  </Form>
+);
+```
+
+- `<FormError />` will display the `.message` property of the error, only when an error was thrown.
+- `<FormError>Hello</FormError>` will display the "Hello" message only when there's an error. This is useful for e.g. complimentary error icons, or messages, that are not the main thing.
+- `<FormError>{msg => msg ? 'a' : 'b'}</FormError>` this will *always* call the callback; if there was an error, its `.message` will be the first argument, and if there was no error it will be empty.
+
+### <FormLoading />
+
+A component used to handle loading state of the form. The form starts "loading" when its submitted, and finishes loading when the onSubmit() callback finishes executing (since that function is normally async):
+
+```js
+import Form, { FormLoading } from 'form-mate';
+
+export default () => (
+  <Form onSubmit={...}>
+    <FormLoading>Loading...</FormLoading>  // Renders only while loading
+    <input name="name" />
+    <button>
+      // Is always executed, receiving the loading status as the first param
+      <FormLoading>
+        {loading => loading ? 'Sending...' : 'Send'}
+      </FormLoading>
+    </button>
+  </Form>
+);
+```
+
+- `<FormLoading>Hello</FormLoading>` will display the "Hello" message only while the form is loading. This is useful for e.g. complimentary messages, loading indicators, etc.
+- `<FormLoading>{loading => loading ? 'a' : 'b'}</FormLoading>` this will *always* call the callback; if the component is loading it will receive `true` as it's only parameter, if it's not then it'll receive `false`.
 
 ## Examples
 
