@@ -151,7 +151,7 @@ export default() => (
 
 In that case, the argument `data` passed to the onSubmit will not be a plain object, it will be an [instance of `FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) instead.
 
-### <FormError />
+### \<FormError /\>
 
 When there's an error on the `onSubmit` function, you can use this component to display it in a variety of ways:
 
@@ -179,7 +179,7 @@ export default () => (
 - `<FormError>Hello</FormError>` will display the "Hello" message only when there's an error. This is useful for e.g. complimentary error icons, or messages, that are not the main thing.
 - `<FormError>{msg => msg ? 'a' : 'b'}</FormError>` this will *always* call the callback; if there was an error, its `.message` will be the first argument, and if there was no error it will be empty.
 
-### <FormLoading />
+### \<FormLoading /\>
 
 A component used to handle loading state of the form. The form starts "loading" when its submitted, and finishes loading when the onSubmit() callback finishes executing (since that function is normally async):
 
