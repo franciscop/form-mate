@@ -38,6 +38,7 @@
     "babel-polyfill": "^6.26.0",
     "jest": "^25.3.0",
     "react": ">=16.8.0",
+    "react-dom": ">=16.8.0",
     "react-test": "^0.13.1",
     "rollup": "^1.32.1",
     "rollup-plugin-babel": "^4.4.0",
