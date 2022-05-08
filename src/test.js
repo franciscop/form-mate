@@ -1,6 +1,6 @@
 import "babel-polyfill";
-import React, { useEffect } from "react";
-import $ from "react-test";
+import React, { useEffect, useState } from "react";
+import $, { until } from "react-test";
 import Form, { FormError, FormLoading } from "./index.js";
 
 const delay = (t) => new Promise((done) => setTimeout(done, t));
@@ -134,5 +134,43 @@ describe("form-mate", () => {
     expect(form.find(".error").text()).toBe("");
     await form.find("button").click();
     expect(form.find(".error").text()).toBe("my mistake");
+  });
+});
+
+describe("Form interaction", () => {
+  it("can handle a form being filled", async () => {
+    const cb = jest.fn();
+    const form = $(
+      <Form onSubmit={cb}>
+        <input name="hello" />
+        <button>Send</button>
+      </Form>
+    );
+    await form.find("button").click();
+    expect(cb).toBeCalledWith({});
+
+    await form.find("input").type("world");
+    await form.find("button").click();
+    expect(cb).toBeCalledWith({ hello: "world" });
+  });
+
+  it("works with a checkbox", async () => {
+    const cb = jest.fn();
+    const box = $(
+      <Form onSubmit={cb}>
+        <input name="tos" type="checkbox" />
+        <button>Send</button>
+      </Form>
+    );
+
+    await box.find("button").click();
+    expect(box.find("input").is(":checked")).toBe(false);
+    expect(cb).toBeCalledWith({});
+
+    await box.find("input").click();
+
+    await box.find("button").click();
+    expect(box.find("input").is(":checked")).toBe(true);
+    expect(cb).toBeCalledWith({ tos: "on" });
   });
 });
