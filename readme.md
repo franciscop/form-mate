@@ -7,7 +7,7 @@ import Form from "form-mate";
 
 // { fullname: "Francisco", email: "xxxxxx@francisco.io" }
 export default () => (
-  <Form onSubmit={data => console.log(data)}>
+  <Form onSubmit={(data) => console.log(data)}>
     <input name="fullname" required />
     <input name="email" type="email" required />
     <button>Subscribe!</button>
@@ -40,7 +40,7 @@ Import it and use it anywhere in your React project:
 import Form from "form-mate";
 
 export default () => (
-  <Form onSubmit={data => console.log(data)} autoReset>
+  <Form onSubmit={(data) => console.log(data)} autoReset>
     {/* ... */}
   </Form>
 );
@@ -57,7 +57,7 @@ import Form from "form-mate";
 
 export default function Subscribe() {
   return (
-    <Form onSubmit={data => console.log(data)}>
+    <Form onSubmit={(data) => console.log(data)}>
       <input name="name" defaultValue="Francisco" />
       <input name="subscribe" defaultChecked type="checkbox" />
       <input name="terms" value="accepted" defaultChecked type="checkbox" />
@@ -86,7 +86,7 @@ import Form from "form-mate";
 
 export default () => {
   const [error, setError] = useState();
-  const onSubmit = data => {
+  const onSubmit = (data) => {
     throw new Error("Aaaaagh");
   };
   return (
@@ -109,7 +109,7 @@ import Form from "form-mate";
 
 export default function Subscribe() {
   return (
-    <Form onChange={data => console.log(data)}>
+    <Form onChange={(data) => console.log(data)}>
       <input name="name" defaultValue="Francisco" />
       <input name="subscribe" defaultChecked type="checkbox" />
       <input name="terms" value="accepted" defaultChecked type="checkbox" />
@@ -177,7 +177,7 @@ export default () => (
 
 - `<FormError />` will display the `.message` property of the error, only when an error was thrown.
 - `<FormError>Hello</FormError>` will display the "Hello" message only when there's an error. This is useful for e.g. complimentary error icons, or messages, that are not the main thing.
-- `<FormError>{msg => msg ? 'a' : 'b'}</FormError>` this will *always* call the callback; if there was an error, its `.message` will be the first argument, and if there was no error it will be empty.
+- `<FormError>{msg => msg ? 'a' : 'b'}</FormError>` this will _always_ call the callback; if there was an error, its `.message` will be the first argument, and if there was no error it will be empty.
 
 ### \<FormLoading /\>
 
@@ -201,7 +201,7 @@ export default () => (
 ```
 
 - `<FormLoading>Hello</FormLoading>` will display the "Hello" message only while the form is loading. This is useful for e.g. complimentary messages, loading indicators, etc.
-- `<FormLoading>{loading => loading ? 'a' : 'b'}</FormLoading>` this will *always* call the callback; if the component is loading it will receive `true` as it's only parameter, if it's not then it'll receive `false`.
+- `<FormLoading>{loading => loading ? 'a' : 'b'}</FormLoading>` this will _always_ call the callback; if the component is loading it will receive `true` as it's only parameter, if it's not then it'll receive `false`.
 
 ## Examples
 
@@ -217,13 +217,13 @@ export default function Groceries() {
   const [items, setItems] = useState([]);
   return (
     <ul>
-      {items.map(item => (
+      {items.map((item) => (
         <li key={item.text}>
           {item.text} × {item.quantity}
         </li>
       ))}
       <li>
-        <Form onSubmit={item => setItems([...items, item])} autoReset>
+        <Form onSubmit={(item) => setItems([...items, item])} autoReset>
           <input name="text" placeholder="Item to buy" autoFocus />
           {" × "}
           <input type="number" name="quantity" defaultValue={1} />
@@ -252,6 +252,58 @@ export default function App() {
       <input name="name" />
       <input type="file" name="file" />
       <button>Send</button>
+    </Form>
+  );
+}
+```
+
+### Async with Axios and Hot-Toast
+
+The common pattern to handle forms is to submit the data with Axios, so let's do so:
+
+```js
+// This should be somewhere in your codebase, let's assume that your
+// API returns a body with { error: "message" } when appropriate
+import axios from "axios";
+
+axios.interceptors.response.use(
+  (res) => res.data,
+  (error) => {
+    // A better message to show to the user than the default HTTP one
+    const message = error.response?.data?.error;
+    if (message) {
+      logError(message); // Or any other preferred way
+      throw new Error(message);
+    }
+
+    // No message; just re-throw the previous error (or anything else)
+    throw error;
+  }
+);
+```
+
+Then when handling our form, we just need to add an onSubmit as usual, without try/catch, since it'll already be caught by Form Mate and handed with the `onError`:
+
+```js
+import Form from "form-mate";
+import axios from "axios";
+import toast from "react-hot-toast";
+
+export default function LoginForm() {
+  const redirect = useRedirect(); // With your favourite routing lib
+
+  const onSubmit = async (data) => {
+    await axios.post("/login", data);
+    toast.success(`Successfully logged in!`);
+    redirect("/");
+  };
+
+  // Show the error, wherever it comes from, on a popup
+  const onError = (error) => toast.error(error.message);
+
+  return (
+    <Form onSubmit={onSubmit} onError={onError}>
+      ...
     </Form>
   );
 }
