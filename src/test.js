@@ -40,6 +40,7 @@ describe("form-mate", () => {
     const form = $(
       <Form onSubmit={cb}>
         <input name="name" defaultValue="Francisco" />
+        <input name="age" defaultValue={25} type="number" />
         <input name="subscribe" defaultChecked type="checkbox" />
         <input name="terms" value="accepted" defaultChecked type="checkbox" />
         <input name="gender" value="male" type="radio" />
@@ -50,9 +51,40 @@ describe("form-mate", () => {
     await form.find("button").click();
     expect(cb).toBeCalledWith({
       name: "Francisco",
+      age: "25", // Casted to string
       subscribe: "on", // The default when no "value" is provided
       terms: "accepted",
       gender: "female",
+    });
+  });
+
+  it("can serialize multiple similar values", async () => {
+    const cb = jest.fn();
+    const form = $(
+      <Form onSubmit={cb}>
+        <input name="name" defaultValue="Francisco" />
+        <input name="name" defaultValue="Presencia" />
+        <button>Submit</button>
+      </Form>
+    );
+    await form.find("button").click();
+    expect(cb).toBeCalledWith({ name: ["Francisco", "Presencia"] });
+  });
+
+  it("removes trailing `[]` from names", async () => {
+    const cb = jest.fn();
+    const form = $(
+      <Form onSubmit={cb}>
+        <input name="name[]" defaultValue="Francisco" />
+        <input name="name[]" defaultValue="Presencia" />
+        <input name="lastname[]" defaultValue="Presencia" />
+        <button>Submit</button>
+      </Form>
+    );
+    await form.find("button").click();
+    expect(cb).toBeCalledWith({
+      name: ["Francisco", "Presencia"],
+      lastname: "Presencia",
     });
   });
 
@@ -151,7 +183,7 @@ describe("Form interaction", () => {
 
     await form.find("input").type("world");
     await form.find("button").click();
-    expect(cb).toBeCalledWith({ hello: "world" });
+    expect(cb).toBeCalledWith({});
   });
 
   it("works with a checkbox", async () => {

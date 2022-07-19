@@ -1,5 +1,4 @@
 import React, { createContext, useRef, useContext, useState } from "react";
-import formToObject from "form_to_object";
 
 const logError = (error) => console.error(error);
 
@@ -8,7 +7,22 @@ const serialize = (form) => {
   if (enctype === "multipart/form-data") {
     return new FormData(form);
   }
-  return formToObject(form) || {};
+  const formData = new FormData(form);
+  const data = {};
+  for (let key of formData.keys()) {
+    const name = key.replace(/\[\]$/, "");
+    data[name] = formData.getAll(key);
+    // Single item => make them a key:value
+    // Multiple items => keep it an array
+    if (data[name].length === 1) {
+      data[name] = data[name][0];
+    }
+    // If there's no item, just don't define it
+    if (data[name] === "") {
+      delete data[name];
+    }
+  }
+  return data;
 };
 
 export const FormContext = createContext({});
