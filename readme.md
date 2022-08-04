@@ -257,7 +257,7 @@ export default function App() {
 }
 ```
 
-### Async with Axios and Hot-Toast
+### Axios and Hot-Toast
 
 The common pattern to handle forms is to submit the data with Axios, so let's do so:
 
@@ -309,7 +309,7 @@ export default function LoginForm() {
 }
 ```
 
-### Conditionally rendering fields
+### Conditional fields
 
 Let's say you want a bit of context of where your users are from. So you ask them for their country, and if the country they provide is the USA you also want their state. Otherwise you don't care if in Spain they are from Madrid or Barcelona.
 
