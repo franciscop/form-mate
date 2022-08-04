@@ -308,3 +308,69 @@ export default function LoginForm() {
   );
 }
 ```
+
+### Conditionally rendering fields
+
+Let's say you want a bit of context of where your users are from. So you ask them for their country, and if the country they provide is the USA you also want their state. Otherwise you don't care if in Spain they are from Madrid or Barcelona.
+
+So we want to render the field to select the state only when the user is from the USA, let's see one way of doing it. We create a form-level variable called "showState", which will be set to `true` when in the USA and to false otherwise, and hence render the state selector when set to true.
+
+[**See CodeSandbox**](https://codesandbox.io/s/loving-keller-ef1k27?file=/src/App.js):
+
+```js
+export default function RegisterForm() {
+  // When in the USA, `showState` should be set to `true`. The select
+  // Defaults to the first country, which is the USA
+  const [showState, setShowState] = useState(true);
+
+  const onChangeCountry = (e) => {
+    const newCountry = e.target.value;
+    // If the new value is the same as the old one, React will
+    // ignore this, so we don't need to manually check with an if()
+    setShowState(newCountry === "usa");
+  };
+
+  return (
+    <Form onSubmit={onSubmit}>
+      <select name="country" onChange={onChangeCountry}>
+        <option value="usa">USA</option>
+        <option value="esp">Spain</option>
+        <option value="jpn">Japan</option>
+        ...
+      </select>
+      {showState ? (
+        <select name="state">
+          <option value="ca">California</option>
+          <option value="ma">Massachusetts</option>
+          <option value="ny">New York</option>
+          ...
+        </select>
+      ) : null}
+      <br />
+      <button>Send</button>
+    </Form>
+  );
+}
+```
+
+There are few other ways of doing this, like with `<Form onChange={...}>`, or with a `ref` assigned to the country selector.
+
+If we want to apply styles ot our state selector and not have it jump in but instead transition from opaque to visible, we could always render it but hidden it; for that we'd also remove the `name` when hidden to avoid it being present when submitting:
+
+[**See CodeSandbox**](https://codesandbox.io/s/eloquent-dirac-586e9o?file=/src/App.js):
+
+```js
+<select
+  name={showState ? "state" : null}
+  style={{
+    transition: "all .2s ease",
+    opacity: showState ? 1 : 0,
+    pointerEvents: showState ? "all" : "none",
+  }}
+>
+  <option value="ca">California</option>
+  <option value="ma">Massachusetts</option>
+  <option value="ny">New York</option>
+  ...
+</select>
+```
