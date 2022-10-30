@@ -374,3 +374,35 @@ If we want to apply styles ot our state selector and not have it jump in but ins
   ...
 </select>
 ```
+
+### HTML Validation
+
+While React Form is **not** focused on validation, you can still perform three kind of validations: HTML validation, Soft Validation and Hard Validation. We only recommend HTML Validation with this library, but you can do the others in a pinch.
+
+What do we mean by HTML validation? What your browser provides, you can add fields like `required`, specify the `type="email"` and such for proper formatting:
+
+- `required`: the field needs to be filled for it to be valid
+- `type="number|email|phone|..."`: the field needs to be formatted like an {number|email|phone|...} to be valid
+- `minlength="3"` and `maxlength="10"`: the field needs to have that number of characters (for strings).
+- `min="3"` and `max="10"`: the field needs to be between those values (for numbers).
+- `pattern`: the data needs to match a regular expression.
+
+As always, [MDN documentation on Built-in validation](https://developer.mozilla.org/en-US/docs/Learn/Forms/Form_validation#using_built-in_form_validation) is spectacular, so please refer to it for further information.
+
+A basic example for a LoginForm would be:
+
+```js
+export default function LoginForm() {
+  return (
+    <Form onSubmit={console.log}>
+      <div>
+        <input name="email" type="email" required />
+      </div>
+      <div>
+        <input name="password" type="password" required minlength="10" />
+      </div>
+      <button>Login</button>
+    </Form>
+  );
+}
+```

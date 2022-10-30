@@ -1,13 +1,11 @@
 import React, { createContext, useRef, useContext, useState } from "react";
 
-const logError = (error) => console.error(error);
-
 const serialize = (form) => {
   const enctype = (form.enctype || "").toLowerCase();
-  if (enctype === "multipart/form-data") {
-    return new FormData(form);
-  }
   const formData = new FormData(form);
+  if (enctype === "multipart/form-data") {
+    return formData;
+  }
   const data = {};
   for (let key of formData.keys()) {
     const name = key.replace(/\[\]$/, "");
@@ -44,7 +42,7 @@ export function FormLoading({ children }) {
 
 export default function Form({
   onSubmit,
-  onError,
+  onError = (e) => console.error(e),
   onChange,
   autoReset,
   children,
@@ -72,18 +70,16 @@ export default function Form({
       if (autoReset) e.target.reset();
     } catch (error) {
       setError(error);
-      if (onError) onError(error);
-      else if (!handled.current) {
-        logError(error);
-      }
+      onError(error);
     } finally {
       // If the component unmounts before the callback finishes, ignore it
       setLoading(false);
     }
   };
 
-  const handleChange = (e) =>
-    onChange ? onChange(serialize(e.currentTarget)) : null;
+  const handleChange = (e) => {
+    return onChange ? onChange(serialize(e.currentTarget)) : null;
+  };
 
   return (
     <form onSubmit={handleSubmit} onChange={handleChange} {...props}>

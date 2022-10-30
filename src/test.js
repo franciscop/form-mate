@@ -1,4 +1,4 @@
-import "babel-polyfill";
+// import "babel-polyfill";
 import React, { useEffect, useState } from "react";
 import $, { until } from "react-test";
 import Form, { FormError, FormLoading } from "./index.js";
