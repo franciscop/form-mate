@@ -21,7 +21,7 @@
     "state",
     "error"
   ],
-  "main": "index.js",
+  "main": "index.min.js",
   "type": "module",
   "files": [],
   "devDependencies": {
