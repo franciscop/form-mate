@@ -90,7 +90,7 @@ export default () => {
     throw new Error("Aaaaagh");
   };
   return (
-    <Form onSubmit={handleForm} onError={setError} autoReset>
+    <Form onSubmit={onSubmit} onError={setError} autoReset>
       {error ? <p>{error.message}</p> : null}
       <input name="fullname" required />
       <input name="email" type="email" required />
@@ -98,6 +98,17 @@ export default () => {
     </Form>
   );
 };
+```
+
+However for very simple error management like the above, it would be better served with `<FormError />`:
+
+```js
+<Form onSubmit={onSubmit} onError={setError} autoReset>
+  <FormError>{(msg) => (msg ? <p>{msg}</p> : "")}</FormError>
+  <input name="fullname" required />
+  <input name="email" type="email" required />
+  <button>Subscribe!</button>
+</Form>
 ```
 
 ### onChange
@@ -120,6 +131,8 @@ export default function Subscribe() {
   );
 }
 ```
+
+It can be useful for e.g. validate data, or to do a preview-like with the content of the fields.
 
 ### autoReset
 
