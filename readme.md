@@ -17,7 +17,7 @@ export default () => (
 
 Benefits over a plain `<form>`:
 
-- Parse the form fields into an object for easy access and consumption. Now you can do `onSubmit(item => setItems([...items, item]))`.
+- Parse the form fields into an object for easy access and consumption. For example, for a form on a TODO list: `onSubmit(newItem => setItems([...items, newItem]))`.
 - Disable the form while it's submitting to avoid double-submit.
 - Prop [`onError`](#onerror) for easy error handling, integrates well with other options.
 - Prop [`onChange`](#onchange) to listen to the form changes as they happen.
@@ -258,7 +258,8 @@ import Form from 'form-mate';
 export default function App() {
   const onSubmit = data => {
     // Send the data to the server
-    await axios.post("/hello", data, { "Content-Type": "multipart/form-data" });
+    const headers = { "Content-Type": "multipart/form-data" };
+    await axios.post("/hello", data, { headers });
   };
   return (
     <Form onSubmit={onSubmit} encType="multipart/form-data">
