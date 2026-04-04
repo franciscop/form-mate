@@ -1,9 +1,8 @@
-// import "babel-polyfill";
-import React, { useEffect, useState } from "react";
-import $, { until } from "react-test";
-import Form, { FormError, FormLoading } from "./index.js";
+import $ from "react-test";
+import { describe, expect, it, vi } from "vitest";
+import Form, { FormError, FormLoading } from "./index";
 
-const delay = (t) => new Promise((done) => setTimeout(done, t));
+const delay = (t: number) => new Promise((done) => setTimeout(done, t));
 
 const throwError = () => {
   throw new Error("my mistake");
@@ -11,11 +10,11 @@ const throwError = () => {
 
 describe("form-mate", () => {
   it("defaults to an empty object", async () => {
-    const cb = jest.fn();
+    const cb = vi.fn();
     const form = $(
       <Form onSubmit={cb}>
         <button>Submit</button>
-      </Form>
+      </Form>,
     );
     await form.find("button").click();
     await delay(100);
@@ -23,12 +22,12 @@ describe("form-mate", () => {
   });
 
   it("can get the data correctly", async () => {
-    const cb = jest.fn();
+    const cb = vi.fn();
     const form = $(
       <Form onSubmit={cb}>
         <input name="hello" defaultValue="world" />
         <button>Submit</button>
-      </Form>
+      </Form>,
     );
     await form.find("button").click();
     expect(cb).toBeCalled();
@@ -36,7 +35,7 @@ describe("form-mate", () => {
   });
 
   it("handles checkboxes and radiobuttons well", async () => {
-    const cb = jest.fn();
+    const cb = vi.fn();
     const form = $(
       <Form onSubmit={cb}>
         <input name="name" defaultValue="Francisco" />
@@ -46,7 +45,7 @@ describe("form-mate", () => {
         <input name="gender" value="male" type="radio" />
         <input name="gender" value="female" defaultChecked type="radio" />
         <button>Submit</button>
-      </Form>
+      </Form>,
     );
     await form.find("button").click();
     expect(cb).toBeCalledWith({
@@ -59,27 +58,27 @@ describe("form-mate", () => {
   });
 
   it("can serialize multiple similar values", async () => {
-    const cb = jest.fn();
+    const cb = vi.fn();
     const form = $(
       <Form onSubmit={cb}>
         <input name="name" defaultValue="Francisco" />
         <input name="name" defaultValue="Presencia" />
         <button>Submit</button>
-      </Form>
+      </Form>,
     );
     await form.find("button").click();
     expect(cb).toBeCalledWith({ name: ["Francisco", "Presencia"] });
   });
 
   it("removes trailing `[]` from names", async () => {
-    const cb = jest.fn();
+    const cb = vi.fn();
     const form = $(
       <Form onSubmit={cb}>
         <input name="name[]" defaultValue="Francisco" />
         <input name="name[]" defaultValue="Presencia" />
         <input name="lastname[]" defaultValue="Presencia" />
         <button>Submit</button>
-      </Form>
+      </Form>,
     );
     await form.find("button").click();
     expect(cb).toBeCalledWith({
@@ -96,7 +95,7 @@ describe("form-mate", () => {
         </div>
         <input name="hello" defaultValue="world" />
         <button>Send</button>
-      </Form>
+      </Form>,
     );
     expect(form.find(".loading").text()).toBe("");
     await form.find("button").click();
@@ -111,10 +110,10 @@ describe("form-mate", () => {
         <input name="hello" defaultValue="world" />
         <button>
           <FormLoading>
-            {(loading) => (loading ? "Sending..." : "Send")}
+            {(loading: boolean) => (loading ? "Sending..." : "Send")}
           </FormLoading>
         </button>
-      </Form>
+      </Form>,
     );
     expect(form.find("button").text()).toBe("Send");
     await form.find("button").click();
@@ -131,7 +130,7 @@ describe("form-mate", () => {
         </div>
         <input name="hello" defaultValue="world" />
         <button>Send</button>
-      </Form>
+      </Form>,
     );
     expect(form.find(".error").text()).toBe("");
     await form.find("button").click();
@@ -146,7 +145,7 @@ describe("form-mate", () => {
         </div>
         <input name="hello" defaultValue="world" />
         <button>Send</button>
-      </Form>
+      </Form>,
     );
     expect(form.find(".error").text()).toBe("");
     await form.find("button").click();
@@ -157,11 +156,11 @@ describe("form-mate", () => {
     const form = $(
       <Form onSubmit={throwError}>
         <div className="error">
-          <FormError>{(message) => message}</FormError>
+          <FormError>{(message: string) => message}</FormError>
         </div>
         <input name="hello" defaultValue="world" />
         <button>Send</button>
-      </Form>
+      </Form>,
     );
     expect(form.find(".error").text()).toBe("");
     await form.find("button").click();
@@ -171,12 +170,12 @@ describe("form-mate", () => {
 
 describe("Form interaction", () => {
   it("can handle a form being filled", async () => {
-    const cb = jest.fn();
+    const cb = vi.fn();
     const form = $(
       <Form onSubmit={cb}>
         <input name="hello" />
         <button>Send</button>
-      </Form>
+      </Form>,
     );
     await form.find("button").click();
     expect(cb).toBeCalledWith({});
@@ -187,12 +186,12 @@ describe("Form interaction", () => {
   });
 
   it("works with a checkbox", async () => {
-    const cb = jest.fn();
+    const cb = vi.fn();
     const box = $(
       <Form onSubmit={cb}>
         <input name="tos" type="checkbox" />
         <button>Send</button>
-      </Form>
+      </Form>,
     );
 
     await box.find("button").click();
