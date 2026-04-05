@@ -14,14 +14,6 @@
     "state",
     "error"
   ],
-  "documentation": {
-    "menu": {
-      "Author": "https://francisco.io/",
-      "Donate": "https://www.paypal.me/franciscopresencia/19",
-      "npm": "https://www.npmjs.com/package/form-mate",
-      "Github": "https://github.com/franciscop/form-mate"
-    }
-  },
   "scripts": {
     "build": "npm run build:library && npm run build:types && npm run build:prettier",
     "build:library": "vite build && mv dist/index.min.js . && rm -rf dist",
@@ -30,8 +22,7 @@
     "lint": "tsc",
     "size": "echo $(gzip -c index.min.js | wc -c) bytes",
     "start": "vitest",
-    "test": "vitest run --coverage",
-    "types": "tsc --emitDeclarationOnly --declaration --outDir ."
+    "test": "vitest run --coverage"
   },
   "main": "index.min.js",
   "type": "module",
@@ -51,12 +42,20 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-test": "^0.24.2",
-    "terser": "^5.31.0",
+    "terser": "^5.46.1",
     "typescript": "^6.0.2",
     "vite": "^8.0.3",
     "vitest": "^4.1.2"
   },
   "peerDependencies": {
     "react": ">=18.0.0"
+  },
+  "documentation": {
+    "menu": {
+      "Author": "https://francisco.io/",
+      "Donate": "https://www.paypal.me/franciscopresencia/19",
+      "npm": "https://www.npmjs.com/package/form-mate",
+      "Github": "https://github.com/franciscop/form-mate"
+    }
   }
 }
