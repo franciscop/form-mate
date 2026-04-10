@@ -1,5 +1,29 @@
 import React, { createContext, useContext, useRef, useState } from "react";
-import { Data, FormErrorProps, FormLoadingProps, FormProps } from "./types";
+
+type Data = FormData | { [key: string]: any };
+
+interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
+  onSubmit: (data: Data) => any | Promise<any>;
+  onSubmitError?: (error: Error) => any | Promise<any>;
+  onChange?: (data: Data) => any;
+  autoReset?: boolean;
+}
+
+type FormErrorChildren =
+  | React.ReactNode
+  | ((message: string, error: Error) => React.ReactNode);
+
+interface FormErrorProps {
+  children?: FormErrorChildren;
+}
+
+type FormLoadingChildren =
+  | React.ReactNode
+  | ((loading: boolean) => React.ReactNode);
+
+interface FormLoadingProps {
+  children?: FormLoadingChildren;
+}
 
 interface FormContextType {
   loading: boolean;
