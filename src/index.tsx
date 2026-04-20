@@ -2,9 +2,12 @@ import React, { createContext, useContext, useRef, useState } from "react";
 
 type Data = FormData | { [key: string]: any };
 
-interface FormProps extends React.FormHTMLAttributes<HTMLFormElement> {
+interface FormProps extends Omit<
+  React.FormHTMLAttributes<HTMLFormElement>,
+  "onError"
+> {
   onSubmit: (data: Data) => any | Promise<any>;
-  onSubmitError?: (error: Error) => any | Promise<any>;
+  onError?: (error: Error) => any | Promise<any>;
   onChange?: (data: Data) => any;
   autoReset?: boolean;
 }
@@ -82,7 +85,7 @@ export function FormLoading({ children }: FormLoadingProps): React.ReactNode {
 
 export default function Form({
   onSubmit,
-  onSubmitError = (e: Error) => console.error(e),
+  onError = (e: Error) => console.error(e),
   onChange,
   autoReset,
   children,
@@ -111,7 +114,7 @@ export default function Form({
     } catch (err) {
       const error = err as Error;
       setError(error);
-      onSubmitError(error);
+      onError(error);
     } finally {
       // If the component unmounts before the callback finishes, ignore it
       setLoading(false);

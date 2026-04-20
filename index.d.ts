@@ -7,9 +7,12 @@ export type Data =
   | {
       [key: string]: any;
     };
-export interface FormProps extends React$1.FormHTMLAttributes<HTMLFormElement> {
+export interface FormProps extends Omit<
+  React$1.FormHTMLAttributes<HTMLFormElement>,
+  "onError"
+> {
   onSubmit: (data: Data) => any | Promise<any>;
-  onSubmitError?: (error: Error) => any | Promise<any>;
+  onError?: (error: Error) => any | Promise<any>;
   onChange?: (data: Data) => any;
   autoReset?: boolean;
 }
@@ -39,7 +42,7 @@ export declare function FormLoading({
 }: FormLoadingProps): React$1.ReactNode;
 declare function Form({
   onSubmit,
-  onSubmitError,
+  onError,
   onChange,
   autoReset,
   children,
