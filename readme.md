@@ -77,6 +77,16 @@ export default function Subscribe() {
 
 It prevents the default action automatically. See [the tests](https://github.com/franciscop/form-mate/blob/master/test.js) for more examples of how the fields are parsed.
 
+To type the form data, annotate the `data` parameter:
+
+```ts
+type SubscribeData = { name: string; gender: "female" | "male" };
+
+<Form onSubmit={(data: SubscribeData) => console.log(data.name)}>
+  ...
+</Form>
+```
+
 ### onError
 
 Optional prop to handle any error happening in the `onSubmit`. This allows the onSubmit to fail as desired. Works well with both sync and async `onSubmit`:
