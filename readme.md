@@ -23,8 +23,8 @@ Benefits over a plain `<form>`:
 - Prop [`onChange`](#onchange) to listen to the form changes as they happen.
 - Prop [`autoReset`](#autoreset) to clear the form after `onSubmit` finishes successfully.
 - Prop [`encType`](#enctype) (like `encType="multipart/form-data"`) for file handling. It makes the callback receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
-- Sub Component `<FormError />` for more advanced error management.
-- Sub Component `<FormLoading />` for more advanced loading state handling.
+- Sub Component `<Form.Error />` for more advanced error management.
+- Sub Component `<Form.Loading />` for more advanced loading state handling.
 
 ## Getting Started
 
@@ -75,7 +75,7 @@ export default function Subscribe() {
 // }
 ```
 
-It prevents the default action automatically. See [the tests](https://github.com/franciscop/form-mate/blob/master/test.js) for more examples of how the fields are parsed.
+It prevents the default action automatically. See [the tests](https://github.com/franciscop/form-mate/blob/master/src/index.test.tsx) for more examples of how the fields are parsed.
 
 To type the form data, annotate the `data` parameter:
 
@@ -89,19 +89,19 @@ type SubscribeData = { name: string; gender: "female" | "male" };
 
 ### onError
 
-Optional prop to handle any error happening in the `onSubmit`. This allows the onSubmit to fail as desired. Works well with both sync and async `onSubmit`:
+Optional prop to handle any error happening in the `onSubmit`, ideal for external error management:
 
 ```js
 import Form from "form-mate";
+import toast from "react-hot-toast";
 
 export default () => {
-  const [error, setError] = useState();
   const onSubmit = (data) => {
     throw new Error("Aaaaagh");
   };
+  const onError = (error) => toast.error(error.message);
   return (
-    <Form onSubmit={onSubmit} onError={setError} autoReset>
-      {error ? <p>{error.message}</p> : null}
+    <Form onSubmit={onSubmit} onError={onError} autoReset>
       <input name="fullname" required />
       <input name="email" type="email" required />
       <button>Subscribe!</button>
@@ -110,11 +110,11 @@ export default () => {
 };
 ```
 
-However for very simple error management like the above, it would be better served with `<FormError />`:
+For inline error management, it would be better to use [`<Form.Error />`](#formerror):
 
 ```js
-<Form onSubmit={onSubmit} onError={setError} autoReset>
-  <FormError>{(msg) => (msg ? <p>{msg}</p> : "")}</FormError>
+<Form onSubmit={onSubmit} autoReset>
+  <Form.Error>{(msg) => (msg ? <p>{msg}</p> : "")}</Form.Error>
   <input name="fullname" required />
   <input name="email" type="email" required />
   <button>Subscribe!</button>
@@ -123,36 +123,35 @@ However for very simple error management like the above, it would be better serv
 
 ### onChange
 
-Listen to the forms' changes in fields as they happen. It will be triggered on every keystroke, on every click (that changes the data), etc:
+Listen to the forms' changes in fields as they happen. It will be triggered on every keystroke, on every click that changes the data, etc:
 
 ```js
+import { useState } from "react";
 import Form from "form-mate";
 
-export default function Subscribe() {
+export default function Preview() {
+  const [name, setName] = useState("");
   return (
-    <Form onChange={(data) => console.log(data)}>
-      <input name="name" defaultValue="Francisco" />
-      <input name="subscribe" defaultChecked type="checkbox" />
-      <input name="terms" value="accepted" defaultChecked type="checkbox" />
-      <input name="gender" value="female" type="radio" />
-      <input name="gender" value="male" defaultChecked type="radio" />
-      <button>Subscribe!</button>
+    <Form onSubmit={...} onChange={(data) => setName(data.name)}>
+      <input name="name" />
+      <p>Preview: {name}</p>
+      <button>Submit</button>
     </Form>
   );
 }
 ```
 
-It can be useful for e.g. validate data, or to do a preview-like with the content of the fields.
+It can be useful for e.g. live previews, character counts, or enabling/disabling other parts of the UI based on the current field values.
 
 ### autoReset
 
-By default the form is not reset after it's submitted. This prop can make the form to reset **after** the onSubmit callback has resolved successfully:
+By default the form is not reset after it's submitted. This prop can make the form to reset **after** the `onSubmit` callback has resolved successfully:
 
 ```js
 <Form onSubmit={...} autoReset>...</Form>
 ```
 
-Even with this prop, the form will _not_ be reset if the `onSubmit` throws an error (sync or async).
+Even with this prop, the form will _not_ be reset if the `onSubmit` throws an error.
 
 This prop is very useful when adding new items to a list in succession, [**see codesandbox example**](https://codesandbox.io/s/determined-nightingale-hzmob).
 
@@ -172,25 +171,25 @@ export default() => (
 );
 ```
 
-In that case, the argument `data` passed to the onSubmit will not be a plain object, it will be an [instance of `FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) instead.
+In that case, the argument `data` passed to the `onSubmit` and `onChange` will be an [instance of `FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) instead.
 
-### \<FormError /\>
+### \<Form.Error /\>
 
-When there's an error on the `onSubmit` function, you can use this component to display it in a variety of ways:
+When there's an error on the `onSubmit` function, you can use this component to display it in multiple ways:
 
 ```js
-import Form, { FormError } from 'form-mate';
+import Form from 'form-mate';
 
 export default () => (
   <Form onSubmit={...}>
-    // A plain string with any error message from onSubmit
-    <FormError />
+    {/* A plain string with any error message from onSubmit */}
+    <Form.Error />
 
-    // A simple message that is displayed only when there's an error
-    <FormError>There was an issue...</FormError>
+    {/* A simple message that is displayed only when there's an error */}
+    <Form.Error>There was an issue...</Form.Error>
 
-    // Use the actual error message within a callback
-    <FormError>{msg => msg ? <p className="error">{msg}</p> : ''}</FormError>
+    {/* Use the actual error message within a callback */}
+    <Form.Error>{msg => msg ? <p className="error">{msg}</p> : ''}</Form.Error>
 
     <input name="name" />
     <button>Send</button>
@@ -198,33 +197,38 @@ export default () => (
 );
 ```
 
-- `<FormError />` will display the `.message` property of the error, only when an error was thrown.
-- `<FormError>Hello</FormError>` will display the "Hello" message only when there's an error. This is useful for e.g. complimentary error icons, or messages, that are not the main thing.
-- `<FormError>{msg => msg ? 'a' : 'b'}</FormError>` this will _always_ call the callback; if there was an error, its `.message` will be the first argument, and if there was no error it will be empty.
+- `<Form.Error />` will display the `.message` property of the error, only when an error was thrown.
+- `<Form.Error>Hello</Form.Error>` will display the "Hello" message only when there's an error. This is useful for e.g. complimentary error icons, or messages, that are not the main thing.
+- `<Form.Error>{msg => msg ? 'a' : 'b'}</Form.Error>` this will _always_ call the callback; if there was an error, its `.message` will be the first argument, and if there was no error it will be empty.
 
-### \<FormLoading /\>
+> Still aliased as `import { FormError } from 'form-mate'`, but the `<Form.Error>` way is recommended now.
 
-A component used to handle loading state of the form. The form starts "loading" when its submitted, and finishes loading when the onSubmit() callback finishes executing (since that function is normally async):
+### \<Form.Loading /\>
+
+Show the loading state of the form. The form starts "loading" when its submitted, and finishes loading when the onSubmit() callback finishes executing:
 
 ```js
-import Form, { FormLoading } from 'form-mate';
+import Form from 'form-mate';
 
 export default () => (
   <Form onSubmit={...}>
-    <FormLoading>Loading...</FormLoading>  // Renders only while loading
+    {/* Renders only while loading */}
+    <Form.Loading>Loading...</Form.Loading>
     <input name="name" />
     <button>
-      // Is always executed, receiving the loading status as the first param
-      <FormLoading>
+      {/* Always executed, receiving the loading status as the first param */}
+      <Form.Loading>
         {loading => loading ? 'Sending...' : 'Send'}
-      </FormLoading>
+      </Form.Loading>
     </button>
   </Form>
 );
 ```
 
-- `<FormLoading>Hello</FormLoading>` will display the "Hello" message only while the form is loading. This is useful for e.g. complimentary messages, loading indicators, etc.
-- `<FormLoading>{loading => loading ? 'a' : 'b'}</FormLoading>` this will _always_ call the callback; if the component is loading it will receive `true` as it's only parameter, if it's not then it'll receive `false`.
+- `<Form.Loading>Hello</Form.Loading>` will display the "Hello" message only while the form is loading. This is useful for e.g. complimentary messages, loading indicators, etc.
+- `<Form.Loading>{loading => loading ? 'a' : 'b'}</Form.Loading>` this will _always_ call the callback; if the component is loading it will receive `true` as it's only parameter, if it's not then it'll receive `false`.
+
+> Still aliased as `import { FormLoading } from 'form-mate'`, but the `<Form.Loading>` way is recommended now.
 
 ## Examples
 
@@ -234,7 +238,7 @@ A fully working shopping list example ([**see codesandbox**](https://codesandbox
 
 ```js
 import React, { useState } from "react";
-import Form from "./Form";
+import Form from "form-mate";
 
 export default function Groceries() {
   const [items, setItems] = useState([]);
@@ -266,7 +270,7 @@ To upload files with React and Axios, you can do it like this:
 import Form from 'form-mate';
 
 export default function App() {
-  const onSubmit = data => {
+  const onSubmit = async (data) => {
     // Send the data to the server
     const headers = { "Content-Type": "multipart/form-data" };
     await axios.post("/hello", data, { headers });

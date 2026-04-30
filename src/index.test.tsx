@@ -2,7 +2,7 @@ import $ from "react-test";
 import { describe, expect, it, vi } from "vitest";
 import Form, { FormError, FormLoading } from "./index";
 
-const delay = (t: number) => new Promise((done) => setTimeout(done, t));
+const delay = (t: number) => new Promise<void>((done) => setTimeout(done, t));
 
 const throwError = () => {
   throw new Error("my mistake");
@@ -165,6 +165,16 @@ describe("form-mate", () => {
     expect(form.find(".error").text()).toBe("");
     await form.find("button").click();
     expect(form.find(".error").text()).toBe("my mistake");
+  });
+});
+
+describe("Form.Error and Form.Loading aliases", () => {
+  it("Form.Error is the same as FormError", () => {
+    expect(Form.Error).toBe(FormError);
+  });
+
+  it("Form.Loading is the same as FormLoading", () => {
+    expect(Form.Loading).toBe(FormLoading);
   });
 });
 

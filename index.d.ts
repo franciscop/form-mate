@@ -2,18 +2,14 @@
 
 import React$1 from "react";
 
-export type Data =
-  | FormData
-  | {
-      [key: string]: any;
-    };
+export type Data = FormData | Record<string, any>;
 export interface FormProps extends Omit<
   React$1.FormHTMLAttributes<HTMLFormElement>,
   "onError"
 > {
-  onSubmit: (data: Data) => any | Promise<any>;
-  onError?: (error: Error) => any | Promise<any>;
-  onChange?: (data: Data) => any;
+  onSubmit: (data: Data) => void | Promise<void>;
+  onError?: (error: Error) => void | Promise<void>;
+  onChange?: (data: Data) => void;
   autoReset?: boolean;
 }
 export type FormErrorChildren =
@@ -48,6 +44,10 @@ declare function Form({
   children,
   ...props
 }: FormProps): JSX.Element;
+declare namespace Form {
+  var Error: typeof FormError;
+  var Loading: typeof FormLoading;
+}
 
 export { Form as default };
 
