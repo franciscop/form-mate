@@ -95,16 +95,10 @@ function Form({
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<Error | false>(false);
 
-  if (!onSubmit && !onChange) {
-    throw new Error("onSubmit() callback is required");
-  }
-
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     try {
-      e.persist();
       e.preventDefault();
-
-      // Disable the form while everything is going on
+      setError(false);
       setLoading(true);
 
       await onSubmit(serialize(e.target as HTMLFormElement));

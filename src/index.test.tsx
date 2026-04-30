@@ -178,6 +178,121 @@ describe("Form.Error and Form.Loading aliases", () => {
   });
 });
 
+describe("autoReset", () => {
+  it("does not reset the form after submit by default", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={cb}>
+        <input name="hello" defaultValue="world" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    await form.find("button").click();
+    expect(cb).toHaveBeenLastCalledWith({ hello: "world" });
+  });
+
+  it("resets the form after a successful submit", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={cb} autoReset>
+        <input name="hello" />
+        <button>Send</button>
+      </Form>,
+    );
+    (form.find("input").get(0) as HTMLInputElement).value = "world";
+    await form.find("button").click();
+    await form.find("button").click();
+    expect(cb).toHaveBeenLastCalledWith({});
+  });
+
+  it("does not reset the form when onSubmit throws", async () => {
+    const cb = vi.fn();
+    let shouldThrow = true;
+    const form = $(
+      <Form
+        onSubmit={(data) => {
+          if (shouldThrow) throw new Error("oops");
+          cb(data);
+        }}
+        autoReset
+      >
+        <input name="hello" defaultValue="world" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    shouldThrow = false;
+    await form.find("button").click();
+    expect(cb).toHaveBeenCalledWith({ hello: "world" });
+  });
+});
+
+describe("onError", () => {
+  it("calls onError with the thrown error", async () => {
+    const onError = vi.fn();
+    const form = $(
+      <Form onSubmit={throwError} onError={onError}>
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    expect(onError).toBeCalledWith(new Error("my mistake"));
+  });
+
+  it("clears the error on a successful re-submit", async () => {
+    let shouldThrow = true;
+    const form = $(
+      <Form
+        onSubmit={() => {
+          if (shouldThrow) throw new Error("oops");
+        }}
+      >
+        <div className="error">
+          <FormError />
+        </div>
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    expect(form.find(".error").text()).toBe("oops");
+    shouldThrow = false;
+    await form.find("button").click();
+    expect(form.find(".error").text()).toBe("");
+  });
+});
+
+describe("onChange", () => {
+  it("calls onChange with serialized data on field change", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={() => {}} onChange={cb}>
+        <input name="hello" defaultValue="" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("input").type("world");
+    expect(cb).toBeCalledWith({ hello: "world" });
+  });
+});
+
+describe("encType", () => {
+  it("passes a FormData instance to onSubmit when encType is multipart/form-data", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={cb} encType="multipart/form-data">
+        <input name="hello" defaultValue="world" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    expect(cb).toBeCalled();
+    const arg = cb.mock.calls[0][0];
+    expect(arg).toBeInstanceOf(FormData);
+    expect(arg.get("hello")).toBe("world");
+  });
+});
+
 describe("Form interaction", () => {
   it("can handle a form being filled", async () => {
     const cb = vi.fn();
