@@ -1,4 +1,4 @@
-# Form Mate [![npm install form-mate](https://img.shields.io/badge/npm%20install-form--mate-blue.svg)](https://www.npmjs.com/package/form-mate) [![test badge](https://github.com/franciscop/form-mate/workflows/tests/badge.svg)](https://github.com/franciscop/form-mate/actions) [![gzip size](https://img.badgesize.io/franciscop/form-mate/master/index.min.js.svg?compression=gzip)](https://github.com/franciscop/form-mate/blob/master/index.min.js)
+# Form Mate [![form-mate](https://img.shields.io/npm/v/form-mate?label=form-mate&color=greenlime)](https://www.npmjs.com/package/form-mate) [![tests](https://github.com/franciscop/form-mate/workflows/tests/badge.svg)](https://github.com/franciscop/form-mate/actions) [![gzip size](https://img.badgesize.io/franciscop/form-mate/master/index.min.js.svg?label=gzip&logo=&compression=gzip)](https://github.com/franciscop/form-mate/blob/master/index.min.js) [![dependencies](https://img.shields.io/badge/dependencies-0-limegreen.svg)](https://github.com/franciscop/form-mate/blob/master/package.json)
 
 A tiny and elegant library to handle forms with React:
 
