@@ -7,8 +7,8 @@ export interface FormProps extends Omit<
   React$1.FormHTMLAttributes<HTMLFormElement>,
   "onError"
 > {
-  onSubmit: (data: Data) => void | Promise<void>;
-  onError?: (error: Error) => void | Promise<void>;
+  onSubmit: (data: Data) => unknown;
+  onError?: (error: Error) => unknown;
   onChange?: (data: Data) => void;
   autoReset?: boolean;
 }

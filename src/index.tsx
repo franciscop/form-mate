@@ -6,8 +6,13 @@ interface FormProps extends Omit<
   React.FormHTMLAttributes<HTMLFormElement>,
   "onError"
 > {
-  onSubmit: (data: Data) => void | Promise<void>;
-  onError?: (error: Error) => void | Promise<void>;
+  // The return value is ignored (awaited when it's a promise), so these are
+  // typed as `unknown` rather than `void | Promise<void>`. TypeScript only
+  // ignores a handler's return value when the expected return type is exactly
+  // `void`; uniting it with `Promise<void>` loses that, and then anything that
+  // returns a value gets rejected, e.g. `onError={(e) => toast.error(e)}`.
+  onSubmit: (data: Data) => unknown;
+  onError?: (error: Error) => unknown;
   onChange?: (data: Data) => void;
   autoReset?: boolean;
 }
