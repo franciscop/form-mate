@@ -17,7 +17,6 @@ describe("form-mate", () => {
       </Form>,
     );
     await form.find("button").click();
-    await delay(100);
     expect(cb).toBeCalledWith({});
   });
 
@@ -88,8 +87,14 @@ describe("form-mate", () => {
   });
 
   it("handles FormLoading with plain children", async () => {
+    let during = "";
+    // click() awaits the whole submit, so read the loading state from inside it
+    const onSubmit = async () => {
+      await delay(100);
+      during = form.find(".loading").text();
+    };
     const form = $(
-      <Form onSubmit={() => delay(1000)}>
+      <Form onSubmit={onSubmit}>
         <div className="loading">
           <FormLoading>Loading...</FormLoading>
         </div>
@@ -99,14 +104,18 @@ describe("form-mate", () => {
     );
     expect(form.find(".loading").text()).toBe("");
     await form.find("button").click();
-    expect(form.find(".loading").text()).toBe("Loading...");
-    await form.delay(1000);
+    expect(during).toBe("Loading...");
     expect(form.find(".loading").text()).toBe("");
   });
 
   it("handles FormLoading with a callback", async () => {
+    let during = "";
+    const onSubmit = async () => {
+      await delay(100);
+      during = form.find("button").text();
+    };
     const form = $(
-      <Form onSubmit={() => delay(1000)}>
+      <Form onSubmit={onSubmit}>
         <input name="hello" defaultValue="world" />
         <button>
           <FormLoading>
@@ -117,8 +126,7 @@ describe("form-mate", () => {
     );
     expect(form.find("button").text()).toBe("Send");
     await form.find("button").click();
-    expect(form.find("button").text()).toBe("Sending...");
-    await form.delay(1000);
+    expect(during).toBe("Sending...");
     expect(form.find("button").text()).toBe("Send");
   });
 
