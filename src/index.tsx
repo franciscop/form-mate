@@ -18,16 +18,14 @@ interface FormProps extends Omit<
 }
 
 type FormErrorChildren =
-  | React.ReactNode
-  | ((message: string, error: Error) => React.ReactNode);
+  React.ReactNode | ((message: string, error: Error) => React.ReactNode);
 
 interface FormErrorProps {
   children?: FormErrorChildren;
 }
 
 type FormLoadingChildren =
-  | React.ReactNode
-  | ((loading: boolean) => React.ReactNode);
+  React.ReactNode | ((loading: boolean) => React.ReactNode);
 
 interface FormLoadingProps {
   children?: FormLoadingChildren;
