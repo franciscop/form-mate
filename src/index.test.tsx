@@ -8,6 +8,22 @@ const throwError = () => {
   throw new Error("my mistake");
 };
 
+// A hand-rolled Standard Schema that coerces `age` to a number, like z.coerce
+const ageSchema = (isAsync = false) => ({
+  "~standard": {
+    version: 1 as const,
+    vendor: "test",
+    validate: (data: any) => {
+      const age = Number(data.age);
+      const result =
+        data.age && age >= 18
+          ? { value: { ...data, age } }
+          : { issues: [{ message: "Must be an adult", path: ["age"] }] };
+      return isAsync ? Promise.resolve(result) : result;
+    },
+  },
+});
+
 describe("form-mate", () => {
   it("defaults to an empty object", async () => {
     const cb = vi.fn();
@@ -17,7 +33,7 @@ describe("form-mate", () => {
       </Form>,
     );
     await form.find("button").click();
-    expect(cb).toBeCalledWith({});
+    expect(cb).toHaveBeenCalledWith({});
   });
 
   it("can get the data correctly", async () => {
@@ -30,7 +46,7 @@ describe("form-mate", () => {
     );
     await form.find("button").click();
     expect(cb).toBeCalled();
-    expect(cb).toBeCalledWith({ hello: "world" });
+    expect(cb).toHaveBeenCalledWith({ hello: "world" });
   });
 
   it("handles checkboxes and radiobuttons well", async () => {
@@ -47,7 +63,7 @@ describe("form-mate", () => {
       </Form>,
     );
     await form.find("button").click();
-    expect(cb).toBeCalledWith({
+    expect(cb).toHaveBeenCalledWith({
       name: "Francisco",
       age: "25", // Casted to string
       subscribe: "on", // The default when no "value" is provided
@@ -66,7 +82,7 @@ describe("form-mate", () => {
       </Form>,
     );
     await form.find("button").click();
-    expect(cb).toBeCalledWith({ name: ["Francisco", "Presencia"] });
+    expect(cb).toHaveBeenCalledWith({ name: ["Francisco", "Presencia"] });
   });
 
   it("removes trailing `[]` from names", async () => {
@@ -80,7 +96,7 @@ describe("form-mate", () => {
       </Form>,
     );
     await form.find("button").click();
-    expect(cb).toBeCalledWith({
+    expect(cb).toHaveBeenCalledWith({
       name: ["Francisco", "Presencia"],
       lastname: "Presencia",
     });
@@ -245,7 +261,7 @@ describe("onError", () => {
       </Form>,
     );
     await form.find("button").click();
-    expect(onError).toBeCalledWith(new Error("my mistake"));
+    expect(onError).toHaveBeenCalledWith(new Error("my mistake"));
   });
 
   it("clears the error on a successful re-submit", async () => {
@@ -280,7 +296,144 @@ describe("onChange", () => {
       </Form>,
     );
     await form.find("input").type("world");
-    expect(cb).toBeCalledWith({ hello: "world" });
+    expect(cb).toHaveBeenCalledWith({ hello: "world" }, true);
+  });
+
+  it("flags the form as invalid by the HTML constraints", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={() => {}} onChange={cb}>
+        <input name="hello" minLength={3} required />
+        <input name="other" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("[name=other]").type("a");
+    expect(cb).toHaveBeenLastCalledWith({ other: "a" }, false);
+    await form.find("[name=hello]").type("abc");
+    expect(cb).toHaveBeenLastCalledWith({ other: "a", hello: "abc" }, true);
+  });
+
+  it("flags the form as invalid by the schema", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={() => {}} onChange={cb} schema={ageSchema()}>
+        <input name="age" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("input").type("1");
+    await delay(0);
+    expect(cb).toHaveBeenLastCalledWith({ age: "1" }, false);
+    await form.find("input").type("18");
+    await delay(0);
+    expect(cb).toHaveBeenLastCalledWith({ age: "18" }, true);
+  });
+});
+
+describe("schema", () => {
+  it("passes the parsed value to onSubmit", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={cb} schema={ageSchema()}>
+        <input name="name" defaultValue="Francisco" />
+        <input name="age" defaultValue="25" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    expect(cb).toHaveBeenCalledWith({ name: "Francisco", age: 25 });
+  });
+
+  it("works with an async schema", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={cb} schema={ageSchema(true)}>
+        <input name="age" defaultValue="25" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    expect(cb).toHaveBeenCalledWith({ age: 25 });
+  });
+
+  it("throws the issues instead of calling onSubmit", async () => {
+    const cb = vi.fn();
+    const onError = vi.fn();
+    const form = $(
+      <Form onSubmit={cb} onError={onError} schema={ageSchema()}>
+        <div className="error">
+          <Form.Error />
+        </div>
+        <input name="age" defaultValue="12" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    expect(cb).not.toBeCalled();
+    expect(form.find(".error").text()).toBe("age: Must be an adult");
+    const error = onError.mock.calls[0][0];
+    expect(error.issues).toEqual([
+      { message: "Must be an adult", path: ["age"] },
+    ]);
+  });
+
+  it("joins multiple issues and reads path segments", async () => {
+    const schema = {
+      "~standard": {
+        version: 1 as const,
+        vendor: "test",
+        validate: () => ({
+          issues: [
+            { message: "Required", path: [{ key: "user" }, "email"] },
+            { message: "Form is closed" },
+          ],
+        }),
+      },
+    };
+    const onError = vi.fn();
+    const form = $(
+      <Form onSubmit={() => {}} onError={onError} schema={schema}>
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    expect(onError.mock.calls[0][0].message).toBe(
+      "user.email: Required\nForm is closed",
+    );
+  });
+
+  it("validates multipart forms but still passes the FormData", async () => {
+    const cb = vi.fn();
+    const form = $(
+      <Form onSubmit={cb} schema={ageSchema()} encType="multipart/form-data">
+        <input name="age" defaultValue="25" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    const arg = cb.mock.calls[0][0];
+    expect(arg).toBeInstanceOf(FormData);
+    expect(arg.get("age")).toBe("25");
+  });
+
+  it("rejects invalid multipart forms", async () => {
+    const cb = vi.fn();
+    const onError = vi.fn();
+    const form = $(
+      <Form
+        onSubmit={cb}
+        onError={onError}
+        schema={ageSchema()}
+        encType="multipart/form-data"
+      >
+        <input name="age" defaultValue="12" />
+        <button>Send</button>
+      </Form>,
+    );
+    await form.find("button").click();
+    expect(cb).not.toBeCalled();
+    expect(onError.mock.calls[0][0].message).toBe("age: Must be an adult");
   });
 });
 
@@ -311,11 +464,11 @@ describe("Form interaction", () => {
       </Form>,
     );
     await form.find("button").click();
-    expect(cb).toBeCalledWith({});
+    expect(cb).toHaveBeenCalledWith({});
 
     await form.find("input").type("world");
     await form.find("button").click();
-    expect(cb).toBeCalledWith({});
+    expect(cb).toHaveBeenCalledWith({});
   });
 
   it("works with a checkbox", async () => {
@@ -329,12 +482,12 @@ describe("Form interaction", () => {
 
     await box.find("button").click();
     expect(box.find("input").is(":checked")).toBe(false);
-    expect(cb).toBeCalledWith({});
+    expect(cb).toHaveBeenCalledWith({});
 
     await box.find("input").click();
 
     await box.find("button").click();
     expect(box.find("input").is(":checked")).toBe(true);
-    expect(cb).toBeCalledWith({ tos: "on" });
+    expect(cb).toHaveBeenCalledWith({ tos: "on" });
   });
 });

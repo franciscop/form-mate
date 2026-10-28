@@ -25,3 +25,58 @@ export const asyncVoidHandlers = (
     <button>Submit</button>
   </Form>
 );
+
+const userSchema = {
+  "~standard": {
+    version: 1 as const,
+    vendor: "test",
+    validate: (value: unknown) => ({ value: value as { age: number } }),
+    types: undefined as unknown as { input: unknown; output: { age: number } },
+  },
+};
+
+export const schemaInfersOutput = (
+  <Form schema={userSchema} onSubmit={(data) => data.age.toFixed()}>
+    <button>Submit</button>
+  </Form>
+);
+
+export const schemaRejectsWrongOutput = (
+  <Form
+    schema={userSchema}
+    // @ts-expect-error `age` is a number after parsing
+    onSubmit={(data: { age: string }) => data.age}
+  >
+    <button>Submit</button>
+  </Form>
+);
+
+export const changeFlag = (
+  <Form
+    onSubmit={() => {}}
+    onChange={(_data, valid) => valid satisfies boolean}
+  >
+    <button>Submit</button>
+  </Form>
+);
+
+export const multipartIsFormData = (
+  <Form
+    schema={userSchema}
+    encType="multipart/form-data"
+    onSubmit={(data) => data.get("age") satisfies FormDataEntryValue | null}
+  >
+    <button>Submit</button>
+  </Form>
+);
+
+export const multipartRejectsSchemaOutput = (
+  <Form
+    schema={userSchema}
+    encType="multipart/form-data"
+    // @ts-expect-error multipart forms pass the FormData, not the output
+    onSubmit={(data: { age: number }) => data.age}
+  >
+    <button>Submit</button>
+  </Form>
+);

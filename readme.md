@@ -21,6 +21,7 @@ Benefits over a plain `<form>`:
 - Disable the form while it's submitting to avoid double-submit.
 - Prop [`onError`](#onerror) for easy error handling, integrates well with other options.
 - Prop [`onChange`](#onchange) to listen to the form changes as they happen.
+- Prop [`schema`](#schema) to validate and parse the data with Zod, Valibot, ArkType, etc.
 - Prop [`autoReset`](#autoreset) to clear the form after `onSubmit` finishes successfully.
 - Prop [`encType`](#enctype) (like `encType="multipart/form-data"`) for file handling. It makes the callback receive an instance of `FormData` instead of a plain object. This makes it easy to submit files with `fetch()`, Axios, etc.
 - Sub Component `<Form.Error />` for more advanced error management.
@@ -77,15 +78,37 @@ export default function Subscribe() {
 
 It prevents the default action automatically. See [the tests](https://github.com/franciscop/form-mate/blob/master/src/index.test.tsx) for more examples of how the fields are parsed.
 
-To type the form data, annotate the `data` parameter:
+To validate the data and get it typed, pass a [`schema`](#schema).
 
-```ts
-type SubscribeData = { name: string; gender: "female" | "male" };
+### schema
 
-<Form onSubmit={(data: SubscribeData) => console.log(data.name)}>
-  ...
-</Form>
+Optional [Standard Schema](https://standardschema.dev/) (Zod, Valibot, ArkType, etc.) to validate and parse the data before it reaches `onSubmit`:
+
+```js
+import Form from "form-mate";
+import { z } from "zod";
+
+const schema = z.object({
+  email: z.email(),
+  age: z.coerce.number().min(18),
+});
+
+export default () => (
+  <Form schema={schema} onSubmit={(data) => console.log(data)}>
+    <input name="email" type="email" required />
+    <input name="age" type="number" required />
+    <Form.Error />
+    <button>Sign up</button>
+  </Form>
+);
+// { email: "xxxxxx@francisco.io", age: 25 }
 ```
+
+Form fields are always strings, so use your library's coercion for anything else: `z.coerce.number()` in Zod, `v.pipe(v.string(), v.transform(Number))` in Valibot, or `"string.numeric.parse"` in ArkType. Empty fields and unchecked checkboxes are left out of the data, so mark them as optional.
+
+`onSubmit` receives the schema's output, and in TypeScript `data` is typed from the schema. With `encType="multipart/form-data"` the schema still validates the fields, but `onSubmit` receives the original `FormData` so the files can be sent as they are.
+
+When validation fails, `onSubmit` is not called and the error goes to [`onError`](#onerror) and [`<Form.Error />`](#formerror) like any other. Its message lists each issue as `field: message`, one per line, and `error.issues` holds the raw issues for per-field display.
 
 ### onError
 
@@ -143,6 +166,17 @@ export default function Preview() {
 
 It can be useful for e.g. live previews, character counts, or enabling/disabling other parts of the UI based on the current field values.
 
+The second argument says whether the form is valid right now, checking both the [HTML constraints](#html-validation) and the [`schema`](#schema). Use it to e.g. disable the submit button:
+
+```js
+const [valid, setValid] = useState(false);
+
+<Form onSubmit={...} schema={schema} onChange={(data, valid) => setValid(valid)}>
+  ...
+  <button disabled={!valid}>Submit</button>
+</Form>
+```
+
 ### autoReset
 
 By default the form is not reset after it's submitted. This prop can make the form to reset **after** the `onSubmit` callback has resolved successfully:
@@ -171,7 +205,7 @@ export default() => (
 );
 ```
 
-In that case, the argument `data` passed to the `onSubmit` and `onChange` will be an [instance of `FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) instead.
+In that case, the argument `data` passed to the `onSubmit` and `onChange` will be an [instance of `FormData`](https://developer.mozilla.org/en-US/docs/Web/API/FormData/FormData) instead. A [`schema`](#schema) still validates the fields before `onSubmit` is called.
 
 ### \<Form.Error /\>
 
@@ -405,9 +439,7 @@ If we want to apply styles ot our state selector and not have it jump in but ins
 
 ### HTML Validation
 
-While React Form is **not** focused on validation, you can still perform three kind of validations: HTML validation, Soft Validation and Hard Validation. We only recommend HTML Validation with this library, but you can do the others in a pinch.
-
-What do we mean by HTML validation? What your browser provides, you can add fields like `required`, specify the `type="email"` and such for proper formatting:
+The browser validates the fields before the form is submitted, so it's the first line of validation. For rules HTML cannot express, or to parse the values, add a [`schema`](#schema) on top. These are the main HTML attributes:
 
 - `required`: the field needs to be filled for it to be valid
 - `type="number|email|phone|..."`: the field needs to be formatted like an {number|email|phone|...} to be valid

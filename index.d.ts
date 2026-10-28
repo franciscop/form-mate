@@ -3,14 +3,54 @@
 import React$1 from "react";
 
 export type Data = FormData | Record<string, any>;
-export interface FormProps extends Omit<
+export interface StandardIssue {
+  readonly message: string;
+  readonly path?: ReadonlyArray<
+    | PropertyKey
+    | {
+        readonly key: PropertyKey;
+      }
+  >;
+}
+export type StandardResult<Output> =
+  | {
+      readonly value: Output;
+      readonly issues?: undefined;
+    }
+  | {
+      readonly issues: ReadonlyArray<StandardIssue>;
+    };
+export interface StandardSchemaV1<Input = unknown, Output = Input> {
+  readonly "~standard": {
+    readonly version: 1;
+    readonly vendor: string;
+    readonly validate: (
+      value: unknown,
+    ) => StandardResult<Output> | Promise<StandardResult<Output>>;
+    readonly types?: {
+      readonly input: Input;
+      readonly output: Output;
+    };
+  };
+}
+export type Output<S, E> = E extends "multipart/form-data"
+  ? FormData
+  : S extends StandardSchemaV1
+    ? NonNullable<S["~standard"]["types"]>["output"]
+    : Data;
+export interface FormProps<
+  S extends StandardSchemaV1 | undefined,
+  E extends string,
+> extends Omit<
   React$1.FormHTMLAttributes<HTMLFormElement>,
-  "onError"
+  "onSubmit" | "onError" | "onChange" | "encType"
 > {
-  onSubmit: (data: Data) => unknown;
+  onSubmit: (data: Output<S, E>) => unknown;
   onError?: (error: Error) => unknown;
-  onChange?: (data: Data) => void;
+  onChange?: (data: Data, valid: boolean) => void;
   autoReset?: boolean;
+  schema?: S;
+  encType?: E;
 }
 export type FormErrorChildren =
   React$1.ReactNode | ((message: string, error: Error) => React$1.ReactNode);
@@ -34,14 +74,18 @@ export declare function FormError({
 export declare function FormLoading({
   children,
 }: FormLoadingProps): React$1.ReactNode;
-declare function Form({
+declare function Form<
+  S extends StandardSchemaV1 | undefined = undefined,
+  E extends string = string,
+>({
   onSubmit,
   onError,
   onChange,
   autoReset,
+  schema,
   children,
   ...props
-}: FormProps): JSX.Element;
+}: FormProps<S, E>): JSX.Element;
 declare namespace Form {
   var Error: typeof FormError;
   var Loading: typeof FormLoading;
